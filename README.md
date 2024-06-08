@@ -53,3 +53,15 @@ swering
 2. Siamese network for image and text similarity:
 https://medium.com/@prabhnoor0212/siamese-network-keras-31a3a8f37d04
 
+--- 
+
+## Additional  Reference
+
+
+#### SciEntsBank dataset Kaggle link
+https://huggingface.co/datasets/nkazi/SciEntsBank/tree/main/data?show_file_info=data%2Ftrain-00001.parquet
+
+#### Common commands used
+See [COMMANDS.md](COMMANDS.md)
+
+---
