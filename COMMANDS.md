@@ -10,10 +10,14 @@ git init                        ### initialize a new local repo
 git repo add origin https://github.com/<your_id>/<your_repo>.git
                                 ### Push a local repo to a NEW github repo
 git branch -M main              ### Set branch you are working on
+rm -r .git                      ### Delete local repo
+git branch new-branch           ### Creates a branch named new-branch
+git checkout new-branch         ### Switches to new-branch
+git commit -a -m 'Change desc'. ### Commits to the currently active branch
+git push origin new-branch      ### pushes changes to new-branch
+git checkout main               ### this command followed by the next one ..
+git merge new-branch            ### .. will merge changes into main
 
-
-# Delete local repo
-rm -r .git
 ```
 
 ## PYTHON

@@ -6,7 +6,8 @@
 
 import pandas as pd
 from langchain_community.document_loaders import PyPDFLoader
-
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 
 def load_dataset(doc_loc: str, doc_type: str):
@@ -21,6 +22,25 @@ def load_dataset(doc_loc: str, doc_type: str):
             docs.extend(loader.load())
         return docs
     return "ERROR: Dataset load failed. Check file type. Only parquet and pdf supported."
+
+
+def train_rag(docs: list): # Still working on this. - Vikrant 
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size = 500,
+        chunk_overlap = 50
+    )
+    splits = text_splitter.split_documents(docs)
+    print(len(splits))
+    splits
+    model_kwargs = {'device':'cuda'} # cuda/cpu
+    # Create a dictionary with encoding options, specifically setting 'normalize_embeddings' to False
+    encode_kwargs = {'normalize_embeddings': False}
+    embedding =  HuggingFaceEmbeddings(
+        model_name=modelPath,     # Provide the pre-trained model's path
+        model_kwargs=model_kwargs, # Pass the model configuration options
+        encode_kwargs=encode_kwargs # Pass the encoding options
+    )
+    return True
 
 
 def main():
