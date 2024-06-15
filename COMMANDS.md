@@ -17,7 +17,8 @@ git commit -a -m 'Change desc'. ### Commits to the currently active branch
 git push origin new-branch      ### pushes changes to new-branch
 git checkout main               ### this command followed by the next one ..
 git merge new-branch            ### .. will merge changes into main
-
+git checkout new-branch         ### this command paired with  git rebase .. 
+git rebase main                 ### .. will merge from master into new-branch
 ```
 
 ## PYTHON
