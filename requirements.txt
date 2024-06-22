@@ -1,0 +1,10 @@
+openai
+langchain
+langchain-openai
+pypdf
+chromadb
+tiktoken
+langchain-community
+langchainhub
+pandas
+pyarrow 
