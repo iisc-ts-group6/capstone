@@ -1,6 +1,6 @@
 # Dataset paths
 DATASET_PATH = 'data/bio_dataset/combined_dataset.csv'
-OPENAI_API_KEY = '<openai api key>'
+OPENAI_API_KEY = ''
 VECTOR_DB_DIRECTORY = 'docs/chroma/'
 DOCUMENTS_DIRECTORY = '/content/'
 
