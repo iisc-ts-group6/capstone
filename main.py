@@ -22,7 +22,7 @@ def authenticate_open_api():
     # f = open('/content/openapi_key.txt')
     # api_key = f.read()
     # if os.getenv('OPENAI_API_KEY') is None:
-    #         os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+    os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
     print(OPENAI_API_KEY)
     openai.api_key = OPENAI_API_KEY
 
@@ -177,7 +177,7 @@ def main():
     print(result["result"])
     
     response = compare_sentences(question, student_answer, llm_answer)
-    
+    print(response.choices[0].message.content)
 
 if __name__ == "__main__":
     main()
