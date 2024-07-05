@@ -1,5 +1,6 @@
 import pandas as pd
 from langchain_community.document_loaders import TextLoader
+import random
 import os
 from sklearn.model_selection import train_test_split
 from config import DATASET_PATH
@@ -25,3 +26,8 @@ class DataLoader:
         train, test = train_test_split(dataframe, test_size=test_size, random_state=random_state)
         return train, test
     
+    def get_random_question(self):
+        df = self.load_dataset()
+        random_index = random.randint(0, len(df) - 1)
+        question = df.iloc[random_index][0]
+        return question

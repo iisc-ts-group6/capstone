@@ -1,4 +1,5 @@
-from prefect import task, Flow
+from prefect import task
+from prefect import Flow
 from src.data_loader import DataLoader
 from src.preprocessor import Preprocessor
 from src.model import Model
@@ -32,14 +33,14 @@ def preprocess_documents(docs):
 
 @task
 def create_vectorstore(splits):
-    model = Model()
-    vectordb = model.create_vectorstore(splits)
+    model = QuestionAnswering()
+    vectordb = model.setup_vector_db(splits)
     return vectordb
 
 @task
 def create_qa_chain(vectordb):
-    model = Model()
-    qa_chain = model.create_qa_chain(vectordb)
+    model = QuestionAnswering()
+    qa_chain = model.setup_qa_chain(vectordb)
     return qa_chain
 
 @task
@@ -80,7 +81,6 @@ def compare_results(gpt_result, sbert_result):
         print("Both evaluations provide similar results.")
 
 with Flow(name="Automated Answer Evaluation") as flow:
-# def automated_answer_evaluation():
     load_env()
     combined_data = load_combined_dataset()
     train_data, test_data = split_dataset(combined_data)

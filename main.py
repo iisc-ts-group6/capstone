@@ -6,28 +6,32 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_openai import ChatOpenAI
-from langchain_community.embeddings.openai import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from openai import OpenAI
-
+from config import OPENAI_API_KEY
 
 CONST_OPENAI_API_KEY =  'OPENAI_API_KEY'
 VECTOR_DB_PERSIST_DIR = 'docs/chroma/'
 LLM_NAME = "gpt-3.5-turbo"
 MAX_TOKENS = 150
 
-def authenticate_open_api(api_key):
+def authenticate_open_api():
     # f = open('/content/openapi_key.txt')
     # api_key = f.read()
-    if os.getenv(CONST_OPENAI_API_KEY) is None:
-            os.environ[CONST_OPENAI_API_KEY] = api_key
-    openai.api_key = os.getenv(CONST_OPENAI_API_KEY)
+    # if os.getenv('OPENAI_API_KEY') is None:
+    #         os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+    print(OPENAI_API_KEY)
+    openai.api_key = OPENAI_API_KEY
 
 
 def load_pdf_documents(filepaths :list) -> list:
     loaders = [PyPDFLoader(filepath) for filepath in filepaths]
-    docs = [loader.load() for loader in loaders]
+    docs = []
+    for loader in loaders:
+        docs.extend(loader.load())
     return docs
 
 def split_docs(documents :list, chunk_size:int, chunk_overlap:int) -> list:
@@ -146,7 +150,7 @@ def main():
     if len(categorized_files["parquet_files"]) > 0:
         print(f"Parquet files: "+ str(len(categorized_files["parquet_files"])))
         df_list = load_parquet_dataset(categorized_files["parquet_files"][:1])
-        print('Parquet datasets: ', list(df_list))
+        # print('Parquet datasets: ', list(df_list))
         print('Parquet dataset shape : ', df_list[0].shape)
         
     if len(categorized_files["pdf_files"]) > 0:
@@ -155,7 +159,8 @@ def main():
         docs = load_pdf_documents(file_paths[:1])
     
     splits  = split_docs(docs, chunk_size=500, chunk_overlap=50) 
-    vectorstore = vector_db_store(splits, embeddings=OpenAIEmbeddings())
+    authenticate_open_api()
+    vectorstore = vector_db_store(splits, embeddings=OpenAIEmbeddings(api_key=OPENAI_API_KEY))
     llm = ChatOpenAI(model_name=LLM_NAME, temperature=0)
     retriever = vectorstore.as_retriever(search_type="mmr",search_kwargs={"k": 2, "fetch_k":6} )# "k":2, "fetch_k":3
     QA_CHAIN_PROMPT = build_rag_prompt()

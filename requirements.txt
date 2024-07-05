@@ -7,4 +7,7 @@ tiktoken
 langchain-community
 langchainhub
 pandas
-pyarrow 
+pyarrow
+prefect
+scikit-learn
+sentence_transformers
