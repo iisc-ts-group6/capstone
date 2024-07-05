@@ -13,7 +13,7 @@ from langchain.chains import RetrievalQA
 from openai import OpenAI
 from config import OPENAI_API_KEY
 
-CONST_OPENAI_API_KEY =  'OPENAI_API_KEY'
+# CONST_OPENAI_API_KEY =  'OPENAI_API_KEY'
 VECTOR_DB_PERSIST_DIR = 'docs/chroma/'
 LLM_NAME = "gpt-3.5-turbo"
 MAX_TOKENS = 150
