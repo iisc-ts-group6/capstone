@@ -7,11 +7,11 @@ from config import DATASET_PATH
 
 
 class DataLoader:
-    def __init__(self) -> None:
+    def __init__(self):
         # self.data_path = "data/bio_dataset/csv/"
         self.docs = []
         self.dataset_location = os.path.join(os.getcwd(), DATASET_PATH)
-        print(os.getcwd())
+        print(self.dataset_location)
     
     def load_dataset(self) -> pd.DataFrame:
         return pd.read_csv(self.dataset_location)
@@ -22,7 +22,7 @@ class DataLoader:
         self.docs.extend(docs_text)
         return self.docs
     
-    def split_dataset(self, dataframe, test_size=0.2, random_state=42):
+    def split_dataset(self, dataframe: pd.DataFrame, test_size=0.2, random_state=42):
         train, test = train_test_split(dataframe, test_size=test_size, random_state=random_state)
         return train, test
     

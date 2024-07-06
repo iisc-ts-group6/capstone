@@ -24,14 +24,22 @@ class Preprocessor:
         # Remove special characters
         text = re.sub(r'[^a-zA-Z0-9\s]', '', text)
         return text
-
-    def preprocess_data(self, df):
+    
+    def fill_none_values(self, df):
         # Clean the data to ensure no NaN values
         df.fillna("", inplace=True)
+
+    def preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        # Clean the data to ensure no NaN values
+        self.fill_none_values(df)
         # Apply text cleaning to each column
-        df['question'] = df['Question'].apply(self.clean_text)
-        df['answer'] = df['Answer'].apply(self.clean_text)
-        df['D1'] = df['D1'].apply(self.clean_text)
-        df['D2'] = df['D2'].apply(self.clean_text)
-        df['D3'] = df['D3'].apply(self.clean_text)
+        for col in df.columns:
+            df[col] = df[col].apply(self.clean_text)            
+        # df['question'] = df['Question'].apply(self.clean_text)
+        # df['answer'] = df['Answer'].apply(self.clean_text)
+        # df['D1'] = df['D1'].apply(self.clean_text)
+        # df['D2'] = df['D2'].apply(self.clean_text)
+        # df['D3'] = df['D3'].apply(self.clean_text)
         return df
+    
+

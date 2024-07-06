@@ -11,3 +11,5 @@ pyarrow
 prefect
 scikit-learn
 sentence_transformers
+datasets
+accelerate

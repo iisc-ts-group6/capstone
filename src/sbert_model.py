@@ -1,14 +1,16 @@
 from sentence_transformers import SentenceTransformer, InputExample, losses, evaluation
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, random_split
 import numpy as np
+import pandas as pd
 from src.preprocessor import Preprocessor
 import os
+from config import SBERT_MODEL_NAME
 import csv
 
 class SBERTModel:
-    def __init__(self, model_name='all-mpnet-base-v2'):
-        self.model_name = model_name
-        self.model = None
+    def __init__(self):
+        self.model =  SentenceTransformer(SBERT_MODEL_NAME)
+        self.fine_tune_model_name= f"{SBERT_MODEL_NAME}_finetuned"
         self.evaluation_metrics = {}
         self.preprocessor = Preprocessor()
     
@@ -16,42 +18,40 @@ class SBERTModel:
         self.model = SentenceTransformer(model_path)
         return self.model
     
-    # def __init__(self):
-    #     self.model = SentenceTransformer('all-mpnet-base-v2')
-    #     self.preprocessor = Preprocessor()
+    # def split_dataset(self, ds: list):
+    #     train_size = int(0.8 * len(ds))
+    #     test_size = len(ds) - train_size
+    #     train_dataset, test_dataset = random_split(ds, [train_size, test_size])
+    #     return train_dataset, test_dataset
 
     def preprocess_data(self, df):
         return self.preprocessor.preprocess_data(df)
 
-    def create_examples(self, df):
+    def create_examples(self, df: pd.DataFrame):
         examples = []
+        # print(df.columns.tolist(), type(df))
         for index, row in df.iterrows():
-            question = row['question']
-            answer = row['answer']
+            question = row['Question']
+            answer = row['Answer']
             distractors = [row['D1'], row['D2'], row['D3']]
             examples.append(InputExample(texts=[question, answer], label=1.0))
             for distractor in distractors:
                 examples.append(InputExample(texts=[question, distractor], label=0.0))
         return examples
 
-    def fine_tune(self, train_data, epochs=1, batch_size=16, output_path='output/sbert'):
+    def fine_tune(self, train_data: list, epochs=1, batch_size=16, output_path='output/sbert'):
         train_dataloader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
         train_loss = losses.CosineSimilarityLoss(self.model)
-        self.model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100)
-        self.model.save(output_path)
-        
-        # Calculate and save evaluation metrics after fine-tuning
-        evaluation_result = self.evaluate(train_data)
-        self.save_evaluation_metrics("fine_tune", evaluation_result)
-                
-        # Save metrics to a CSV file
-        self.save_metrics_to_csv(output_path, "fine_tune_metrics.csv")
+        self.model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100)        
+        self.model.save(output_path, model_name=self.fine_tune_model_name)
 
-
-    def evaluate(self, test_data, batch_size=16):
-        test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
-        evaluator = evaluation.EmbeddingSimilarityEvaluator(test_dataloader)
-        return self.model.evaluate(evaluator)
+    def evaluate(self, data, output_path="output/sbert", phase="fine_tune"):
+        # test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
+        evaluator = evaluation.EmbeddingSimilarityEvaluator.from_input_examples(data)
+        evaluation_result = self.model.evaluate(evaluator)
+        self.save_evaluation_metrics(phase, evaluation_result)
+        self.save_metrics_to_csv(output_path, f"{phase}_metrics.csv")
+        return evaluation_result                
 
     def test_similarity(self, question, correct_answer, student_answer):
         question = self.preprocessor.clean_text(question)
