@@ -42,8 +42,10 @@ class SBERTModel:
     def fine_tune(self, train_data: list, epochs=1, batch_size=16, output_path='output/sbert'):
         train_dataloader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
         train_loss = losses.CosineSimilarityLoss(self.model)
+        print("train started...")
         self.model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100)        
-        self.model.save(output_path, model_name=self.fine_tune_model_name)
+        print("train ended")
+        self.model.save(output_path)
 
     def evaluate(self, data, output_path="output/sbert", phase="fine_tune"):
         # test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
