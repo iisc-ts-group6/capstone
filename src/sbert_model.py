@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from src.preprocessor import Preprocessor
 import os
-from config import SBERT_MODEL_NAME
+from config import SBERT_MODEL_NAME, FINETUNE_MODEL_PATH
 import csv
 
 class SBERTModel:
@@ -13,6 +13,7 @@ class SBERTModel:
         self.fine_tune_model_name= f"{SBERT_MODEL_NAME}_finetuned"
         self.evaluation_metrics = {}
         self.preprocessor = Preprocessor()
+        self.output_model_path= FINETUNE_MODEL_PATH
     
     def load_model(self, model_path):
         self.model = SentenceTransformer(model_path)
@@ -39,15 +40,15 @@ class SBERTModel:
                 examples.append(InputExample(texts=[question, distractor], label=0.0))
         return examples
 
-    def fine_tune(self, train_data: list, epochs=1, batch_size=16, output_path='output/sbert'):
+    def fine_tune(self, train_data: list, epochs=1, batch_size=16):
         train_dataloader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
         train_loss = losses.CosineSimilarityLoss(self.model)
         print("train started...")
         self.model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100)        
         print("train ended")
-        self.model.save(output_path)
+        self.model.save(self.output_model_path)
 
-    def evaluate(self, data, output_path="output/sbert", phase="fine_tune"):
+    def evaluate(self, data, output_path="output/metrics", phase="fine_tune"):
         # test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
         evaluator = evaluation.EmbeddingSimilarityEvaluator.from_input_examples(data)
         evaluation_result = self.model.evaluate(evaluator)
@@ -79,15 +80,3 @@ class SBERTModel:
             writer.writerow(["Phase", "Metrics"])
             for phase, metrics in self.evaluation_metrics.items():
                 writer.writerow([phase, metrics])
-                    
-    def predict(self, question, answer):
-        if not self.model:
-            raise ValueError("Model has not been loaded. Please load the model first.")
-
-        embeddings = self.model.encode([question, answer])
-        similarity_score = self.cosine_similarity(embeddings[0], embeddings[1])
-
-        # Save prediction results
-        self.save_evaluation_metrics("prediction", similarity_score)
-
-        return similarity_score

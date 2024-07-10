@@ -1,5 +1,5 @@
 import pandas as pd
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
 import random
 import os
 from sklearn.model_selection import train_test_split
@@ -11,7 +11,20 @@ class DataLoader:
         # self.data_path = "data/bio_dataset/csv/"
         self.docs = []
         self.dataset_location = os.path.join(os.getcwd(), DATASET_PATH)
-        print(self.dataset_location)
+        # print(self.dataset_location)
+    
+    def load_pdfs(self, pdf_paths: list):
+        loaders = []
+        for file_path in pdf_paths:
+            full_path = os.path.join(os.getcwd(), file_path)
+            if os.path.exists(full_path):
+                loaders.append(PyPDFLoader(full_path))
+        docs = []
+        for loader in loaders:
+            documents = loader.load()
+            docs.extend(documents)        
+    
+        return docs
     
     def load_dataset(self) -> pd.DataFrame:
         return pd.read_csv(self.dataset_location)

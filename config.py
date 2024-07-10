@@ -1,16 +1,21 @@
 # Dataset paths
 DATASET_PATH = 'data/bio_dataset/combined_dataset.csv'
 OPENAI_API_KEY= ''
-VECTOR_DB_DIRECTORY = 'docs/chroma/'
+VECTOR_DB_DIRECTORY = '/docs/.chroma/'
+CROMADB_COLLECTION_NAME = 'langchain_store'
 DOCUMENTS_DIRECTORY = '/content/'
-
+FINETUNE_MODEL_PATH = 'output/sbert'
 # Model configurations
-SBERT_MODEL_NAME = 'all-mpnet-base-v2'
+EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'
 
 # Training configurations
 BATCH_SIZE = 16
 EPOCHS = 1
+TEMPERATURE = 0
 
+TOP_K = 5
+RETURN_K = 2
+SEARCH_TYPE = 'mmr'
 # Evaluation configurations
 SIMILARITY_THRESHOLD = 0.98
 

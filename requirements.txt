@@ -1,10 +1,11 @@
-openai
 langchain
-langchain-openai
+langchain_chroma
+langchain_community
+langchain_openai
+openai
 pypdf
 chromadb
 tiktoken
-langchain-community
 langchainhub
 pandas
 pyarrow
@@ -13,3 +14,5 @@ scikit-learn
 sentence_transformers
 datasets
 accelerate
+fastapi
+pydantic
