@@ -37,7 +37,8 @@ class DatasetLoader:
         return pd.read_excel(self.sbert_dataset_location)
     
     def save_df(self, df: pd.DataFrame, path):
-        df.to_csv(path, index=False)
+        if not os.path.exists(path):
+            df.to_csv(path, index=False)
     
     def load_documents(self) -> list:
         text_loader = TextLoader(self.dataset_location)

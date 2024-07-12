@@ -61,8 +61,10 @@ def convert_df_to_input_examples(df):
     return examples
 
 def df_to_input_examples(df):
-    pairs = df[['Sentence1', 'Sentence2']]
-    labels = df['Label']
+    pairs = df[['Sentence1', 'Sentence2']].values.tolist()
+    labels = df['Label'].tolist()
+    print("train_pairs:", len(pairs))
+    print("train_labels:", len(labels))
     examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(pairs, labels)]
     return examples
 
@@ -74,19 +76,31 @@ def run_sts_pipeline():
     print(data.shape, pairs_df.shape)
     
     train_df, test_df = dl.split_dataset(pairs_df, test_size=train_test_split_size, random_state=42)
+    print(train_df.shape, test_df.shape)
     
     #save train and test data
     dl.save_df(train_df, dl.train_ds_location)
     dl.save_df(test_df, dl.test_ds_location)
-    print('split dataset complete')
+    print('split and saving train and test dataset complete')
 
     # Convert DataFrames to InputExample format
     # train_examples = convert_df_to_input_examples(train_df)
     # test_examples = convert_df_to_input_examples(test_df)
     train_examples =  df_to_input_examples(train_df)
     test_examples =  df_to_input_examples(test_df)
-     
     
+    # train_pairs = train_df[['Sentence1', 'Sentence2']]
+    # train_labels = train_df['Label']
+    # print("train_pairs:", len(train_pairs))
+    # print("train_labels:", len(train_labels))
+    # train_examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(train_pairs, train_labels)]
+    
+    # test_pairs = test_df[['Sentence1', 'Sentence2']]
+    # test_labels = test_df['Label']
+    # test_examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(test_pairs, test_labels)]
+    
+    print(f"train_examples: {len(train_examples)}, test_examples: {len(test_examples)}")
+
     # Load pre-trained SBERT model  all-mpnet-base-v2 or all-MiniLM-L6-v2
     model = SentenceTransformer(sts_model_name)
     print(f'loaded pre-trained model: {sts_model_name}')
@@ -94,10 +108,11 @@ def run_sts_pipeline():
     # Define our training loss and a DataLoader for training
     train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=BATCH_SIZE)
     train_loss = losses.CosineSimilarityLoss(model=model)
+    print(len(train_dataloader))
     
     # Fine-tune the model
-    warmup_steps = 50
-    print('training started....')
+    warmup_steps = int(len(train_dataloader) * 1 * 0.1)
+    print(warmup_steps)
     model.fit(train_objectives=[(train_dataloader, train_loss)],
             epochs=EPOCHS,
             warmup_steps=warmup_steps,
