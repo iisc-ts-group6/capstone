@@ -41,5 +41,3 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     # df['D2'] = df['D2'].apply(self.clean_text)
     # df['D3'] = df['D3'].apply(self.clean_text)
     return df
-    
-
