@@ -1,16 +1,13 @@
 #sts_pipeline.py (Semantic Textual Similarity)
-
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sentence_transformers import SentenceTransformer, InputExample, losses
-from torch.utils.data import DataLoader
-from datetime import datetime
 from itertools import product 
 import pandas as pd
 import torch
 
+from src.sbert_model import SBERTModel
+import src.preprocessor as pp
 from src.data_loader import DatasetLoader
-from config import sts_model_name, BATCH_SIZE, EPOCHS, train_test_split_size, SBERT_TRAIN_DS, SBERT_TEST_DS
+from config import BATCH_SIZE, EPOCHS, train_test_split_size
 
 # specify GPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -38,90 +35,41 @@ def convert_to_pairs(df)-> pd.DataFrame:
 
         # Generate positive pairs (1 for pos_pairs)
         pos_pairs = product([answer], positive_columns.values.tolist())
-        pos_pairs = [(pair[0], pair[1], 1) for pair in pos_pairs]
+        pos_pairs = [(str(pair[0]), str(pair[1]), 1.0) for pair in pos_pairs]
 
         # Generate negative pairs (0 for neg_pairs)
         neg_pairs = product([answer], distractor_columns.values.flatten().tolist())
-        neg_pairs = [(pair[0], pair[1], 0) for pair in neg_pairs]
+        neg_pairs = [(str(pair[0]), str(pair[1]), 0) for pair in neg_pairs]
         
         all_pairs.extend(list(pos_pairs))
         all_pairs.extend(list(neg_pairs))
 
     # Create a DataFrame with the specified columns
-    return pd.DataFrame(all_pairs, columns=['Sentence1', 'Sentence2', 'Label'])
+    pairs_df = pd.DataFrame(all_pairs, columns=['Sentence1', 'Sentence2', 'Label'])
+    return pairs_df
     
-# Function to convert DataFrame to InputExample objects
-def convert_df_to_input_examples(df):
-    examples = []
-    for _, row in df.iterrows():
-        sentence1 = row['Sentence1']
-        sentence2 = row['Sentence2']
-        label = row['Label']        
-        examples.append(InputExample(texts=[sentence1, sentence2], label=label))
-    return examples
-
-def df_to_input_examples(df):
-    pairs = df[['Sentence1', 'Sentence2']].values.tolist()
-    labels = df['Label'].tolist()
-    print("train_pairs:", len(pairs))
-    print("train_labels:", len(labels))
-    examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(pairs, labels)]
-    return examples
-
+  
 def run_sts_pipeline():
     dl = DatasetLoader()
     data = dl.load_xlsx_dataset()
+
     pairs_df = convert_to_pairs(data.copy())
     print('dataset loaded...')
     print(data.shape, pairs_df.shape)
     
-    train_df, test_df = dl.split_dataset(pairs_df, test_size=train_test_split_size, random_state=42)
-    print(train_df.shape, test_df.shape)
-    
-    #save train and test data
-    dl.save_df(train_df, dl.train_ds_location)
-    dl.save_df(test_df, dl.test_ds_location)
+    train_df, eval_df, test_df = dl.train_test_split_and_save(pairs_df, test_size=train_test_split_size, random_state=42)
+    print(train_df.shape, eval_df.shape, test_df.shape)
     print('split and saving train and test dataset complete')
 
-    # Convert DataFrames to InputExample format
-    # train_examples = convert_df_to_input_examples(train_df)
-    # test_examples = convert_df_to_input_examples(test_df)
-    train_examples =  df_to_input_examples(train_df)
-    test_examples =  df_to_input_examples(test_df)
+    # pp.preprocess_data(train_df)
     
-    # train_pairs = train_df[['Sentence1', 'Sentence2']]
-    # train_labels = train_df['Label']
-    # print("train_pairs:", len(train_pairs))
-    # print("train_labels:", len(train_labels))
-    # train_examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(train_pairs, train_labels)]
-    
-    # test_pairs = test_df[['Sentence1', 'Sentence2']]
-    # test_labels = test_df['Label']
-    # test_examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(test_pairs, test_labels)]
-    
-    print(f"train_examples: {len(train_examples)}, test_examples: {len(test_examples)}")
-
     # Load pre-trained SBERT model  all-mpnet-base-v2 or all-MiniLM-L6-v2
-    model = SentenceTransformer(sts_model_name)
-    print(f'loaded pre-trained model: {sts_model_name}')
-
-    # Define our training loss and a DataLoader for training
-    train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=BATCH_SIZE)
-    train_loss = losses.CosineSimilarityLoss(model=model)
-    print(len(train_dataloader))
+    st = SBERTModel()
+    st.fine_tune(train_df, epochs=EPOCHS, batch_size=BATCH_SIZE)
     
-    # Fine-tune the model
-    warmup_steps = int(len(train_dataloader) * 1 * 0.1)
-    print(warmup_steps)
-    model.fit(train_objectives=[(train_dataloader, train_loss)],
-            epochs=EPOCHS,
-            warmup_steps=warmup_steps,
-            show_progress_bar=True)
+    # Calculate and save evaluation metrics after fine-tuning
+    evaluation_result = st.evaluate(eval_df)
+    print(evaluation_result)
     
-    # Save the fine-tuned model
-    model_save_path = '.models/finetuned_sbert_model'
-    model.save(model_save_path)
-    print(f"model saved at {model_save_path}")
-
 if __name__ == "__main__":
     run_sts_pipeline()

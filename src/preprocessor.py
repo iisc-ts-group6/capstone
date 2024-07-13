@@ -10,7 +10,7 @@ def split_documents(docs):
     )
     return text_splitter.split_documents(docs)
 
-def clean_text(text):
+def clean_text(text: str):
     # Remove excess newline characters
     text = re.sub(r'\s+', ' ', text)
     # Convert to lowercase
@@ -34,10 +34,6 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     fill_none_values(df)
     # Apply text cleaning to each column
     for col in df.columns:
-        df[col] = df[col].apply(clean_text)            
-    # df['question'] = df['Question'].apply(self.clean_text)
-    # df['answer'] = df['Answer'].apply(self.clean_text)
-    # df['D1'] = df['D1'].apply(self.clean_text)
-    # df['D2'] = df['D2'].apply(self.clean_text)
-    # df['D3'] = df['D3'].apply(self.clean_text)
+        if df[col].dtype == "str":
+            df[col] = df[col].apply(clean_text)      
     return df

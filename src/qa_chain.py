@@ -3,17 +3,21 @@
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
-
-from config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, TEMPLATE, TOP_K
+import openai
+from config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, TEMPLATE, TOP_K, OPENAI_API_KEY
 from src.vectorstore import VectorStore
+import os
 
 class rag_model:
     def __init__(self) -> None:
         self.QA_CHAIN_PROMPT = PromptTemplate(
             input_variables=["context", "question"],
             template=TEMPLATE)
+        os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+        self.api_key = os.getenv('OPENAI_API_KEY')
+        print(self.api_key)
+        openai.api_key = self.api_key
         self.llm = ChatOpenAI(model_name=LLM_NAME, temperature=TEMPERATURE)
-        
 
     def create_qa_chain(self, llm, retriever):
         return RetrievalQA.from_chain_type(

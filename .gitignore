@@ -162,3 +162,4 @@ cython_debug/
 docs/
 output/sbert
 openapi_key.txt
+.models

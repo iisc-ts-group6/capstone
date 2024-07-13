@@ -1,13 +1,15 @@
 # Dataset paths
 DATASET_PATH = 'data/bio_dataset/combined_dataset.csv'
 SBERT_DATASET_PATH = 'data/master_sheet_use.xlsx'
+MATERSHEET_FILEPATH = 'data/master_sheet_use.xlsx'
 SBERT_TRAIN_DS = 'data/sts_qa_train.csv'
+SBERT_EVAL_DS = 'data/sts_qa_eval.csv'
 SBERT_TEST_DS = 'data/sts_qa_test.csv'
-OPENAI_API_KEY= ''
+OPENAI_API_KEY = ''
 VECTOR_DB_DIRECTORY = '/docs/.chroma/'
 CROMADB_COLLECTION_NAME = 'langchain_store'
 DOCUMENTS_DIRECTORY = '/content/'
-FINETUNE_MODEL_PATH = 'output/sbert'
+# FINETUNE_MODEL_PATH = 'output/sbert'
 
 train_test_split_size =0.2
 eval_test_split_size =0.5
@@ -15,11 +17,12 @@ eval_test_split_size =0.5
 # Model configurations
 EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'
 
-sts_model_name="sentence-transformers/all-MiniLM-L6-v2"
+sts_model_name="all-MiniLM-L6-v2"
+FINETUNE_MODEL_PATH = f'.models/{sts_model_name}_finetuned'
 
 # Training configurations
 BATCH_SIZE = 16
-EPOCHS = 4
+EPOCHS = 1
 TEMPERATURE = 0
 
 TOP_K = 5

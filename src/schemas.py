@@ -3,5 +3,7 @@ from typing import Any, List, Optional
 
 class PredictionResults(BaseModel):
     question: str
-    answer: str
+    llm_answer: str
+    student_answer: str
+    score: float
     errors: Optional[Any]

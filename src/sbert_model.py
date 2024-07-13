@@ -2,31 +2,23 @@ from sentence_transformers import SentenceTransformer, InputExample, losses, eva
 from torch.utils.data import DataLoader, random_split
 import numpy as np
 import pandas as pd
-from src.preprocessor import Preprocessor
+import src.preprocessor as pp
 import os
-from config import SBERT_MODEL_NAME, FINETUNE_MODEL_PATH
+from config import sts_model_name, FINETUNE_MODEL_PATH
 import csv
 
 class SBERTModel:
     def __init__(self):
-        self.model =  SentenceTransformer(SBERT_MODEL_NAME)
-        self.fine_tune_model_name= f"{SBERT_MODEL_NAME}_finetuned"
+        self.model =  SentenceTransformer(sts_model_name)
         self.evaluation_metrics = {}
-        self.preprocessor = Preprocessor()
         self.output_model_path= FINETUNE_MODEL_PATH
     
     def load_model(self, model_path):
         self.model = SentenceTransformer(model_path)
         return self.model
     
-    # def split_dataset(self, ds: list):
-    #     train_size = int(0.8 * len(ds))
-    #     test_size = len(ds) - train_size
-    #     train_dataset, test_dataset = random_split(ds, [train_size, test_size])
-    #     return train_dataset, test_dataset
-
     def preprocess_data(self, df):
-        return self.preprocessor.preprocess_data(df)
+        return pp.preprocess_data(df)
 
     def create_examples(self, df: pd.DataFrame):
         examples = []
@@ -39,27 +31,38 @@ class SBERTModel:
             for distractor in distractors:
                 examples.append(InputExample(texts=[question, distractor], label=0.0))
         return examples
+    
+    def df_to_input_examples(self, df):
+        # Convert pairs and labels to InputExample format
+        pairs = df[['Sentence1', 'Sentence2']].values.tolist()
+        labels = df['Label'].values.tolist() 
+        examples = [InputExample(texts=[pair[0], pair[1]], label=label) for pair, label in zip(pairs, labels)]
+        print(f"pairs: {len(pairs)}, labels: {len(labels)}, examples: {len(examples)}")
+        return examples
 
-    def fine_tune(self, train_data: list, epochs=1, batch_size=16):
-        train_dataloader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
+    def fine_tune(self, train_df: pd.DataFrame, epochs=1, batch_size=16):
+        train_examples = self.df_to_input_examples(train_df)
+        train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=batch_size)
         train_loss = losses.CosineSimilarityLoss(self.model)
         print("train started...")
-        self.model.fit(train_objectives=[(train_dataloader, train_loss)], epochs=epochs, warmup_steps=100)        
+        self.model.fit(train_objectives=[(train_dataloader, train_loss)], 
+                       epochs=epochs, warmup_steps=100, show_progress_bar=True)        
         print("train ended")
         self.model.save(self.output_model_path)
 
     def evaluate(self, data, output_path="output/metrics", phase="fine_tune"):
         # test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
-        evaluator = evaluation.EmbeddingSimilarityEvaluator.from_input_examples(data)
+        train_examples = self.df_to_input_examples(data)
+        evaluator = evaluation.EmbeddingSimilarityEvaluator.from_input_examples(train_examples)
         evaluation_result = self.model.evaluate(evaluator)
         self.save_evaluation_metrics(phase, evaluation_result)
         self.save_metrics_to_csv(output_path, f"{phase}_metrics.csv")
         return evaluation_result                
 
     def test_similarity(self, question, correct_answer, student_answer):
-        question = self.preprocessor.clean_text(question)
-        correct_answer = self.preprocessor.clean_text(correct_answer)
-        student_answer = self.preprocessor.clean_text(student_answer)
+        question = pp.clean_text(question)
+        correct_answer = pp.clean_text(correct_answer)
+        student_answer = pp.clean_text(student_answer)
         embeddings = self.model.encode([question, correct_answer, student_answer])
         sim_score = self.cosine_similarity(embeddings[1], embeddings[2])
         return sim_score
