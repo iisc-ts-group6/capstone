@@ -1,0 +1,2 @@
+Phase,Metrics
+fine_tune,"{'pearson_cosine': 0.8451513320078772, 'spearman_cosine': 0.8159191048347049, 'pearson_manhattan': 0.8479501739108656, 'spearman_manhattan': 0.8161939546308494, 'pearson_euclidean': 0.8476503713146135, 'spearman_euclidean': 0.8159191048347049, 'pearson_dot': 0.8451513351235475, 'spearman_dot': 0.8159192662291402, 'pearson_max': 0.8479501739108656, 'spearman_max': 0.8161939546308494}"

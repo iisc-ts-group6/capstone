@@ -6,7 +6,7 @@ from pathlib import Path
 from setuptools import find_packages, setup
 
 # Package meta-data.
-NAME = 'Question Answer Validation'
+NAME = 'qna_model'
 DESCRIPTION = "Descriptve Question Answer Validation Package"
 EMAIL = "------"
 AUTHOR = "----------"

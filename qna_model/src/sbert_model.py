@@ -6,7 +6,7 @@ import os
 import csv
 
 import src.preprocessor as pp
-from config import sts_model_name, FINETUNE_MODEL_PATH
+from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH
 
 
 class SBERTModel:

@@ -1,20 +1,43 @@
-from fastapi import FastAPI
-import uvicorn
-from src.schemas import PredictionResults
-from src.qa_chain import rag_model
-import sts_predict as pred
-from pydantic import BaseModel
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+# print(parent, root)
+sys.path.append(str(root))
+
+
 from typing import Any
+from fastapi import APIRouter
+from fastapi.encoders import jsonable_encoder
+from pydantic import BaseModel
 
-from src.data_loader import DatasetLoader
+from app import __version__, schemas
+from app.config import settings
 
-app = FastAPI()
+from qna_model.src.data_loader import DatasetLoader
+from qna_model.src.qa_chain import rag_model
+import qna_model.sts_predict as pred
+
+
+api_router = APIRouter()
 
 class UserQuery(BaseModel):
   query: str
   user_input: str
 
-@app.post("/predict", response_model= Any)
+@api_router.get("/health", response_model=schemas.Health, status_code=200)
+def health() -> dict:
+    """
+    Root Get
+    """
+    health = schemas.Health(
+        name=settings.PROJECT_NAME, api_version=__version__, model_version='0.0.1'
+    )
+
+    return health.dict()
+
+
+@api_router.post("/predict", response_model= Any)
 async def predict(data: UserQuery):
     rm = rag_model()
     question = data.query
@@ -31,15 +54,10 @@ async def predict(data: UserQuery):
                  'llm_answer':llm_answer , 'score': str(score)}
     return response
 
-@app.get("/getquestions", response_model= Any)
+@api_router.get("/getquestions", response_model= Any)
 async def getquestions():
     dl = DatasetLoader()
     test_df = dl.load_xlsx_dataset(dl.mastersheet_location)
     random_rows = test_df.sample(5)
     response = random_rows['Question'].to_list()
     return response
-
-# Run the API server (modify host and port if needed)
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
-     
