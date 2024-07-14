@@ -1,7 +1,13 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 from langchain_chroma import Chroma
 
-from src.qna_embeddings import embedding_func
-from config import VECTOR_DB_DIRECTORY, CROMADB_COLLECTION_NAME
+from qna_model.src.qna_embeddings import embedding_func
+from qna_model.config import VECTOR_DB_DIRECTORY, CROMADB_COLLECTION_NAME
 
 class VectorStore:
     def __init__(self):

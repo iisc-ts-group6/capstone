@@ -1,9 +1,16 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 import pandas as pd
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 import random
 import os
 from sklearn.model_selection import train_test_split
-from config import DATASET_PATH, SBERT_DATASET_PATH, SBERT_TRAIN_DS, SBERT_TEST_DS, SBERT_EVAL_DS, MATERSHEET_FILEPATH
+
+from qna_model.config import DATASET_PATH, SBERT_DATASET_PATH, SBERT_TRAIN_DS, SBERT_TEST_DS, SBERT_EVAL_DS, MATERSHEET_FILEPATH
 
 
 class DatasetLoader:

@@ -1,11 +1,17 @@
 # pipeline.py
-import os
 
-from src.qa_chain import rag_model
-from src.vectorstore import VectorStore
-from src.data_loader import DatasetLoader
-from src.preprocessor import split_documents, preprocess_docs
-from config import DOCUMENTS_DIRECTORY
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
+import os
+from qna_model.src.qa_chain import rag_model
+from qna_model.src.vectorstore import VectorStore
+from qna_model.src.data_loader import DatasetLoader
+from qna_model.src.preprocessor import split_documents, preprocess_docs
+from qna_model.config import DOCUMENTS_DIRECTORY
 
 def run_pipeline():
 

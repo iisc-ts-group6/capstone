@@ -1,14 +1,19 @@
 # qa_chain.py
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
 
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
 import openai
-from config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, TEMPLATE, TOP_K
-from src.vectorstore import VectorStore
 import os
 from dotenv import load_dotenv
 
+from qna_model.src.vectorstore import VectorStore
+from qna_model.config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, TEMPLATE, TOP_K
 
 class rag_model:
     def __init__(self) -> None:

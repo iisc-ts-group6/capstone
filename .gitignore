@@ -161,4 +161,4 @@ cython_debug/
 
 output/sbert
 openapi_key.txt
-.trained_models
+trained_models

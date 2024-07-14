@@ -1,11 +1,17 @@
 #sts_pipeline.py (Semantic Textual Similarity)
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 import pandas as pd
 from itertools import product 
 import pandas as pd
 
-from src.sbert_model import SBERTModel
-from src.data_loader import DatasetLoader
-from config import BATCH_SIZE, EPOCHS, train_test_split_size
+from qna_model.src.sbert_model import SBERTModel
+from qna_model.src.data_loader import DatasetLoader
+from qna_model.config import BATCH_SIZE, EPOCHS, train_test_split_size
 
 
 def convert_to_pairs(df)-> pd.DataFrame:

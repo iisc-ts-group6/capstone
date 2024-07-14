@@ -13,10 +13,10 @@ from pydantic import BaseModel
 
 from app import __version__, schemas
 from app.config import settings
-
+from qna_model import __version__ as version_number
 from qna_model.src.data_loader import DatasetLoader
 from qna_model.src.qa_chain import rag_model
-import qna_model.sts_predict as pred
+from qna_model.sts_predict import sts_predict_score
 
 
 api_router = APIRouter()
@@ -31,7 +31,7 @@ def health() -> dict:
     Root Get
     """
     health = schemas.Health(
-        name=settings.PROJECT_NAME, api_version=__version__, model_version='0.0.1'
+        name=settings.PROJECT_NAME, api_version=__version__, version_number=version_number
     )
 
     return health.dict()
@@ -48,7 +48,8 @@ async def predict(data: UserQuery):
     
     print(student_answer)
     print(llm_answer)
-    score = pred.predict(llm_answer, student_answer)
+    pred_obj = sts_predict_score()
+    score = pred_obj.predict(llm_answer, student_answer)
     print(score)
     response = { 'question': question , 'student_answer': student_answer , 
                  'llm_answer':llm_answer , 'score': str(score)}

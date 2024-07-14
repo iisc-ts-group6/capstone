@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 # Dataset paths
 DATASET_PATH = 'data/bio_dataset/combined_dataset.csv'
 SBERT_DATASET_PATH = 'data/master_sheet_use.csv'
@@ -16,8 +22,8 @@ eval_test_split_size =0.5
 EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'
 
 sts_model_name="all-MiniLM-L6-v2"
-FINETUNE_MODEL_PATH = f'.trained_models/{sts_model_name}_finetuned'
-
+FINETUNE_MODEL_PATH = f'trained_models/{sts_model_name}_finetuned'
+HF_FINTUNE_MODEL_PATH = 'msamg/sts_qna_model'
 # Training configurations
 BATCH_SIZE = 16
 EPOCHS = 1

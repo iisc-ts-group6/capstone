@@ -1,7 +1,14 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import re
 import pandas as pd
-from config import CHUNK_SIZE, CHUNK_OVERLAP
+
+from qna_model.config import CHUNK_SIZE, CHUNK_OVERLAP
 
 def split_documents(docs):
     text_splitter = RecursiveCharacterTextSplitter(

@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
-print(parent, root, sep='\n')
+# print(parent, root, sep='\n')
 sys.path.append(str(root))
 #print(sys.path)
 from typing import Any
@@ -52,5 +52,5 @@ if settings.BACKEND_CORS_ORIGINS:
 
 if __name__ == "__main__":
     import uvicorn
-    print(f"inside {__name__}")
+    # print(f"inside {__name__}")
     uvicorn.run(app, host="0.0.0.0", port=8001) 

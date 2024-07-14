@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+file = Path(__file__).resolve()
+parent, root = file.parent, file.parents[1]
+sys.path.append(str(root))
+
 from sentence_transformers import SentenceTransformer, InputExample, losses, evaluation
 from torch.utils.data import DataLoader
 import numpy as np
@@ -5,7 +11,7 @@ import pandas as pd
 import os
 import csv
 
-import src.preprocessor as pp
+import qna_model.src.preprocessor as pp
 from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH
 
 
