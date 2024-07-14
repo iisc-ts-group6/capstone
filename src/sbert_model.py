@@ -76,8 +76,22 @@ class SBERTModel:
     def get_evaluation_metrics(self):
         return self.evaluation_metrics
     
+    def create_directory(self, filepath):
+        # Extract directory path
+        directory = os.path.dirname(filepath)
+        try:
+            # Create directory if it doesn't exist
+            if not os.path.exists(directory):
+                os.makedirs(directory)  # Create nested directories if necessary
+
+            print(f"Directory created successfully: {filepath}")
+        except OSError as e:
+            print(f"Error creating directory: {e}")
+
     def save_metrics_to_csv(self, output_path, filename):
         filepath = os.path.join(output_path, filename)
+        if not os.path.exists(filepath):
+            self.create_directory(filepath)
         with open(filepath, mode='w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["Phase", "Metrics"])

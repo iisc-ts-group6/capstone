@@ -6,14 +6,15 @@ from src.vectorstore import VectorStore
 
 from src.data_loader import DatasetLoader
 from src.preprocessor import split_documents, preprocess_docs
-# from config import LLM_NAME, TEMPERATURE, SEARCH_TYPE, RETURN_K, TOP_K
+# from config import LLM_NAME, TEMPERATURE, SEARCH_TYPE, RETURN_K, TOP_K, OPENAI_API_KEY
 import os, openai
 
+
 def run_pipeline():
-    f = open('openapi_key.txt')
-    api_key = f.read()
-    os.environ['OPENAI_API_KEY'] = api_key
-    openai.api_key= os.getenv('OPENAI_API_KEY')
+    # f = open('openapi_key.txt')
+    # api_key = f.read()
+    # os.environ['OPENAI_API_KEY'] = OPENAI_API_KEY
+    # openai.api_key= os.getenv('OPENAI_API_KEY')
 
     file_paths = ['data\8\\ncert-textbook-for-class-8-science-chapter-1.pdf',
                   'data\8\\ncert-textbook-for-class-8-science-chapter-2.pdf']

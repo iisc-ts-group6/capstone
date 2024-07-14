@@ -37,7 +37,8 @@ class DatasetLoader:
         return pd.read_csv(path)
 
     def load_xlsx_dataset(self, path='') -> pd.DataFrame:
-        print(self.sbert_dataset_location)
+        if path == '':
+            return pd.read_excel(self.sbert_dataset_location)
         return pd.read_excel(self.sbert_dataset_location)
     
     def save_df(self, df: pd.DataFrame, path):
