@@ -16,7 +16,7 @@ eval_test_split_size =0.5
 EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'
 
 sts_model_name="all-MiniLM-L6-v2"
-FINETUNE_MODEL_PATH = f'.models/{sts_model_name}_finetuned'
+FINETUNE_MODEL_PATH = f'.trained_models/{sts_model_name}_finetuned'
 
 # Training configurations
 BATCH_SIZE = 16

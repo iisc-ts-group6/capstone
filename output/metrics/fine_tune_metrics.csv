@@ -1,2 +1,0 @@
-Phase,Metrics
-fine_tune,"{'pearson_cosine': 0.8430425699425435, 'spearman_cosine': 0.8059145722550433, 'pearson_manhattan': 0.8327941579649254, 'spearman_manhattan': 0.8050900228666097, 'pearson_euclidean': 0.8317360152907971, 'spearman_euclidean': 0.8059147316705131, 'pearson_dot': 0.8430425719615088, 'spearman_dot': 0.8059145722550433, 'pearson_max': 0.8430425719615088, 'spearman_max': 0.8059147316705131}"

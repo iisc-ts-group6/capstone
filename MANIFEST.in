@@ -1,0 +1,18 @@
+include *.txt
+include *.md
+include *.pkl
+recursive-include ./qna_model *
+
+include qna_model/data/8/*.pdf
+include qna_model/data/master_sheet_use.csv
+include qna_model/trained_models/*.pkl
+include qna_model/VERSION
+include qna_model/config.py
+
+include requirements/requirements.txt
+include requirements/test_requirements.txt
+exclude *.log
+exclude *.cfg
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
