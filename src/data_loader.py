@@ -18,17 +18,17 @@ class DatasetLoader:
         self.mastersheet_location = os.path.join(os.getcwd(), MATERSHEET_FILEPATH)
         # print(self.dataset_location)
     
-    def load_pdfs(self, pdf_paths: list):
-        loaders = []
-        for file_path in pdf_paths:
-            full_path = os.path.join(os.getcwd(), file_path)
-            if os.path.exists(full_path):
-                loaders.append(PyPDFLoader(full_path))
+    # def load_pdfs(self, pdf_paths: list):
+    def load_pdfs(self, pdf_directory: str):
         docs = []
-        for loader in loaders:
-            documents = loader.load()
-            docs.extend(documents)        
-    
+        for filename  in os.listdir(pdf_directory):
+            full_path = os.path.join(pdf_directory, filename )
+            if os.path.exists(full_path):
+                try:
+                    loader = PyPDFLoader(full_path)
+                    docs.extend(loader.load()) 
+                except Exception as e:    
+                    print(f'Error in reading file: {full_path}')
         return docs
     
     def load_dataset(self, path='') -> pd.DataFrame:
@@ -36,10 +36,10 @@ class DatasetLoader:
             return pd.read_csv(self.dataset_location)
         return pd.read_csv(path)
 
-    def load_xlsx_dataset(self, path='') -> pd.DataFrame:
+    def load_sbert_dataset(self, path='') -> pd.DataFrame:
         if path == '':
-            return pd.read_excel(self.sbert_dataset_location)
-        return pd.read_excel(self.sbert_dataset_location)
+            return pd.read_csv(self.sbert_dataset_location)
+        return pd.read_csv(self.sbert_dataset_location)
     
     def save_df(self, df: pd.DataFrame, path):
         if not os.path.exists(path):

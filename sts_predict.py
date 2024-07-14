@@ -22,10 +22,7 @@ if __name__ == "__main__":
     random_row = test_df.sample(n=1)
     sentence1 = random_row['Sentence1'].iloc[0]
     sentence2 = random_row['Sentence2'].iloc[0]
-    # print( sentence1)
-    # print( type(sentence1))
+    print( random_row)
+    print(f'Label: {random_row["Label"].iloc[0]}')
     score = predict(sentence1, sentence2)
-    print(score)
-    # # Access data in the random row (assuming it's a Series)
-    # print(random_row.iloc[0])  # Access first element (value)
-    # print(random_row.index[0])   # Access index (row label)
+    print(f'similarity score: {score}')

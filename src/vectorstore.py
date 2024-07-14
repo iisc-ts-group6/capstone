@@ -5,7 +5,6 @@ from config import VECTOR_DB_DIRECTORY, CROMADB_COLLECTION_NAME
 
 class VectorStore:
     def __init__(self):
-        self.collection_name = CROMADB_COLLECTION_NAME
         self.embeddings = embedding_func
         self.vectorstore = Chroma(collection_name=CROMADB_COLLECTION_NAME, 
                                   embedding_function=self.embeddings,
@@ -13,7 +12,10 @@ class VectorStore:
         
     def add_documents(self, splits):
         self.vectorstore.reset_collection()
+        print(f"cleared vector store collection: {CROMADB_COLLECTION_NAME}")
         self.vectorstore.add_documents(splits, embedding=self.embeddings)
+        print(f"added {len(splits)} splits to vector store collection")
+        
     
     def embed_query(self, query):
         return self.embeddings.embed_query(query)

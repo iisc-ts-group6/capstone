@@ -2,16 +2,10 @@
 import pandas as pd
 from itertools import product 
 import pandas as pd
-import torch
 
 from src.sbert_model import SBERTModel
-import src.preprocessor as pp
 from src.data_loader import DatasetLoader
 from config import BATCH_SIZE, EPOCHS, train_test_split_size
-
-# specify GPU
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-print(device)
 
 
 def convert_to_pairs(df)-> pd.DataFrame:
@@ -51,7 +45,7 @@ def convert_to_pairs(df)-> pd.DataFrame:
   
 def run_sts_pipeline():
     dl = DatasetLoader()
-    data = dl.load_xlsx_dataset()
+    data = dl.load_sbert_dataset()
 
     pairs_df = convert_to_pairs(data.copy())
     print('dataset loaded...')

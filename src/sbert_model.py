@@ -1,11 +1,13 @@
 from sentence_transformers import SentenceTransformer, InputExample, losses, evaluation
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
-import src.preprocessor as pp
 import os
-from config import sts_model_name, FINETUNE_MODEL_PATH
 import csv
+
+import src.preprocessor as pp
+from config import sts_model_name, FINETUNE_MODEL_PATH
+
 
 class SBERTModel:
     def __init__(self):
@@ -84,7 +86,7 @@ class SBERTModel:
             if not os.path.exists(directory):
                 os.makedirs(directory)  # Create nested directories if necessary
 
-            print(f"Directory created successfully: {filepath}")
+            print(f"Directory created successfully: {directory}")
         except OSError as e:
             print(f"Error creating directory: {e}")
 

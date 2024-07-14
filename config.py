@@ -1,14 +1,13 @@
 # Dataset paths
 DATASET_PATH = 'data/bio_dataset/combined_dataset.csv'
-SBERT_DATASET_PATH = 'data/master_sheet_use.xlsx'
+SBERT_DATASET_PATH = 'data/master_sheet_use.csv'
 MATERSHEET_FILEPATH = 'data/master_sheet_use.xlsx'
 SBERT_TRAIN_DS = 'data/sts_qa_train.csv'
 SBERT_EVAL_DS = 'data/sts_qa_eval.csv'
 SBERT_TEST_DS = 'data/sts_qa_test.csv'
-VECTOR_DB_DIRECTORY = '/docs/.chroma/'
-CROMADB_COLLECTION_NAME = 'langchain_store'
-DOCUMENTS_DIRECTORY = '/content/'
-# FINETUNE_MODEL_PATH = 'output/sbert'
+VECTOR_DB_DIRECTORY = '/docs/chroma/'
+CROMADB_COLLECTION_NAME = 'qna_vectordb'
+DOCUMENTS_DIRECTORY = 'data/8' 
 
 train_test_split_size =0.2
 eval_test_split_size =0.5
