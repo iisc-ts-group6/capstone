@@ -1,0 +1,60 @@
+request url: http://localhost:8001/api/v1/predict
+
+request body:
+{
+    "question": "what are types of crop seasons",
+    "user_input": "The two types of crop seasons are kharif and rabi crops."
+}
+
+response:
+{
+  "question": "what are the Microorganisms",
+  "student_answer": "I don't know, I m learning now",
+  "llm_answer": "Microorganisms are tiny living organisms that can only be seen under a microscope. They include bacteria, viruses, fungi, and protozoa.",
+  "gpt_answer": "",
+	"result": "",
+  "score": "0.016181098"
+}
+
+request url: http://localhost:8001/api/v1/validate_answers
+
+request body:
+
+
+{
+    "inputs": [
+        {
+            "question": "what are types of Microorganisms",
+            "user_input": "bacteria, fungi, protozoa and some algae.."
+        },
+        {
+            "question": "what are types of crop seasons",
+            "user_input": "The two types of crop seasons are kharif and rabi crops."
+        }
+    ]
+}
+
+response:
+
+{
+    "errors": null,
+    "version": "0.0.3",
+    "predictions": [
+        {
+            "question": "what are types of Microorganisms",
+            "student_answer": "bacteria, fungi, protozoa and some algae..",
+            "llm_answer": "Microorganisms can be classified into different types such as bacteria, viruses, fungi, protozoa, and algae based on their characteristics and structures.",
+            "gpt_answer": "",
+            "result": "",
+            "score": 0.6139501333236694
+        },
+        {
+            "question": "what are types of crop seasons",
+            "student_answer": "The two types of crop seasons are kharif and rabi crops.",
+            "llm_answer": "The types of crop seasons are kharif, rabi, and zaid. Kharif crops are sown in the rainy season, rabi crops are sown in the winter season, and zaid crops are sown in between the kharif and rabi seasons.",
+            "gpt_answer": "",
+            "result": "",
+            "score": 0.08199547231197357
+        }
+    ]
+}
