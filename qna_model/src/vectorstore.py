@@ -19,8 +19,13 @@ class VectorStore:
     def add_documents(self, splits):
         self.vectorstore.reset_collection()
         print(f"cleared vector store collection: {CROMADB_COLLECTION_NAME}")
-        self.vectorstore.add_documents(splits, embedding=self.embeddings)
-        print(f"added {len(splits)} splits to vector store collection")
+        try:
+            print(f"adding {len(splits)} splits to vector store collection")
+            self.vectorstore.add_documents(splits, embedding=self.embeddings)
+        except Exception as e:
+            error_msg = f'error in adding documents to vector db: {e}'
+            return error_msg
+        return f"added {len(splits)} splits to vector store collection"
         
     
     def embed_query(self, query):

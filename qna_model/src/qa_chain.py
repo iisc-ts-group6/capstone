@@ -20,7 +20,8 @@ class rag_model:
         load_dotenv()
         self.api_key = os.getenv('OPENAI_API_KEY')
         openai.api_key = self.api_key
-        
+        if self.api_key != None or self.api_key != '':
+            print('assigned api key')
         self.llm = ChatOpenAI(model_name=LLM_NAME, temperature=TEMPERATURE, api_key=self.api_key)
         self.QA_CHAIN_PROMPT = PromptTemplate(
             input_variables=["context", "question"],
@@ -50,3 +51,29 @@ class rag_model:
         except Exception as e:
             errors = f"Error during processing: {e}"
         return {"question": query, "answer": llm_answer, "errors": errors}
+
+    def get_llm_answers(self, questions: list):
+        print("inside get llm answer")
+        chroma_client = VectorStore()
+        errors = None
+        llm_answers = []
+        try:
+            retriever = chroma_client.as_retriever(
+                search_type=SEARCH_TYPE, 
+                search_kwargs={"k": RETURN_K, "fetch_k": TOP_K })
+            
+            qa_chain = self.create_qa_chain(self.llm, retriever)
+            print("calling qa_chain.invoke")
+            
+            for question in questions:
+                try:
+                    result = qa_chain.invoke({"query": question})
+                    print(result["result"])
+                    llm_answers.append((question, result["result"]))
+                except Exception as e:
+                    errors = f"Error while getting llm_answer processing: {e}"
+                    print(errors)
+        except Exception as e:
+            errors = f"Error while creating qa_chain: {e}"
+            print(errors)
+        return llm_answers, errors

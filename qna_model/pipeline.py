@@ -15,9 +15,6 @@ from qna_model.config import DOCUMENTS_DIRECTORY
 
 def run_pipeline():
 
-    # file_paths = ['data\8\\ncert-textbook-for-class-8-science-chapter-1.pdf',
-    #               'data\8\\ncert-textbook-for-class-8-science-chapter-2.pdf']
-    
     # Get the absolute path of the project directory
     project_dir = os.path.dirname(os.path.abspath(__file__))
     # Combine relative path with project directory to get the full path
@@ -36,13 +33,14 @@ def run_pipeline():
     
     #3. add to vector db
     vectorstore = VectorStore()
-    vectorstore.add_documents(splits)
+    message= vectorstore.add_documents(splits)
+    print(message)
     
-    #4. Test
-    query = "Who is the prime minister of USA?"
-    rm = rag_model()
-    llm_answer = rm.get_llm_answer(query)
-    print(llm_answer)
+    # #4. Test
+    # query = "Who is the prime minister of USA?"
+    # rm = rag_model()
+    # llm_answer = rm.get_llm_answer(query)
+    # print(llm_answer)
     
 if __name__ == "__main__":
     run_pipeline()
