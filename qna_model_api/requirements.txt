@@ -2,15 +2,7 @@ uvicorn>=0.16.0
 fastapi>=0.64.0,<1.0.0
 pydantic #>=1.8.1,<2.0.0
 requests>=2.23.0,<=2.32.2
-
-# repo maintenance tooling
-#black>=22.0.0,<23.0.0
-#flake8>=3.9.0,<3.10.0
-#mypy==0.812
-#isort==5.8.0
-
-# After uploding your package in PyPi use the given below
-#bikeshare_model==0.0.1
+pydantic_settings
 
 # If locally copyied whl file inside qna_model_api then use given below
-qna_model-0.0.1-py3-none-any.whl
+qna_model-0.0.3-py3-none-any.whl

@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 # print(parent, root)
@@ -8,22 +9,25 @@ sys.path.append(str(root))
 
 from typing import Any
 from fastapi import APIRouter
-from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel
 
+import json
+import pandas as pd
 from app import __version__, schemas
 from app.config import settings
+from fastapi.encoders import jsonable_encoder
+from app.schemas.user_query import PredictionResults
+
 from qna_model import __version__ as version_number
 from qna_model.src.data_loader import DatasetLoader
 from qna_model.src.qa_chain import rag_model
 from qna_model.sts_predict import sts_predict_score
-
+from qna_model.pipeline import run_pipeline
 
 api_router = APIRouter()
 
-class UserQuery(BaseModel):
-  query: str
-  user_input: str
+# class UserQuery(BaseModel):
+#   query: str
+#   user_input: str
 
 @api_router.get("/health", response_model=schemas.Health, status_code=200)
 def health() -> dict:
@@ -36,11 +40,15 @@ def health() -> dict:
 
     return health.dict()
 
-
+# @api_router.post("/add_to_vectordb")
+# async def predict():
+#    # Todo: Comment below line once vectorstore db is persistent with splits
+#     return run_pipeline()
+    
 @api_router.post("/predict", response_model= Any)
-async def predict(data: UserQuery):
+async def predict(data: schemas.UserQuery):
     rm = rag_model()
-    question = data.query
+    question = data.question
     result = rm.get_llm_answer(query=question)
     print(result)
     student_answer = data.user_input
@@ -54,6 +62,59 @@ async def predict(data: UserQuery):
     response = { 'question': question , 'student_answer': student_answer , 
                  'llm_answer':llm_answer , 'score': str(score)}
     return response
+
+def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
+    try:
+        # Create ResponseObj instance with appropriate data types
+        res = schemas.ResponseObj(
+            question=row["question"],
+            student_answer=row["user_input"],
+            llm_answer=row["llm_answer"],
+            gpt_answer= "",
+            result= "",
+            score=float(row["score"]),  # Ensure score is a float
+        )
+        return res
+    except (KeyError, ValueError) as e:  # Handle potential missing data or type errors
+        print(f"Error converting row: {row.to_dict()}. Exception: {e}")
+        
+    
+    
+@api_router.post("/validate_answers", response_model=schemas.PredictionResults)
+async def validate_answers(input_data: schemas.MultipleDataInputs):
+    rm = rag_model()
+    pred_obj = sts_predict_score()
+    
+    input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
+    input_df['llm_answer'] = None
+    input_df['score'] = None 
+    
+    # print(input_df.head())
+    print("calling llm to get answers")
+    # Get LLM Answer
+    questions = input_df['question'].values.tolist()
+    llm_answers, errors = rm.get_llm_answers(questions)
+    print(llm_answers, errors)
+    if not errors is None:
+        return {"predictions": [],"version": version_number, "errors": errors}
+    
+    for index, row in input_df.iterrows():
+        if row['question'] == llm_answers[index][0]:
+            row['llm_answer'] = llm_answers[index][1]
+    # print(llm_answers)
+
+    # Compare using sbert
+    for index, row in input_df.iterrows():
+        s1 = row['user_input']
+        s2 = row['llm_answer']
+        input_df.loc[index, 'score']  = pred_obj.predict(s1, s2)
+    print(input_df)
+    data_list = input_df.apply(row_to_dict, axis=1).tolist()
+    print(data_list)
+    # json_data = json.dumps(data_list)
+    # return {"predictions": data_list,"version": version_number, "errors": errors}
+    return PredictionResults(predictions=data_list, version=version_number, errors=errors)
+
 
 @api_router.get("/getquestions", response_model= Any)
 async def getquestions():
