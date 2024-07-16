@@ -2,14 +2,14 @@ name: CD Pipeline
 
 # Only trigger, when the build workflow succeeded i.e. CI Pipeline
 on:
-    push:
-      branches:
-        - main
+    # push:
+    #   branches:
+    #     - main
 
-  # workflow_run:
-  #   workflows: ["QnA CI"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["QnA CI"]
+    types:
+      - completed
 
 jobs:
   deploy:
