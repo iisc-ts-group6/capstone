@@ -26,9 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements/requirements.txt
 
-      - name: Execute predict script
-        run: |
-          python qna_model/rag_predict.py
+      # - name: Execute predict script
+      #   run: |
+      #     python qna_model/rag_predict.py
 
       - name: Execute build script
         run: |
