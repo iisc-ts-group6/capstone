@@ -10,7 +10,6 @@ sys.path.append(str(root))
 from typing import Any
 from fastapi import APIRouter
 
-import json
 import pandas as pd
 from app import __version__, schemas
 from app.config import settings
@@ -42,24 +41,6 @@ async def predict():
    # Todo: Comment below line once vectorstore db is persistent with splits
     return run_pipeline()
     
-# @api_router.post("/predict", response_model= Any)
-# async def predict(data: schemas.UserQuery):
-#     rm = rag_model()
-#     question = data.question
-#     result = rm.get_llm_answer(query=question)
-#     print(result)
-#     student_answer = data.user_input
-#     llm_answer = result['answer']
-    
-#     print(student_answer)
-#     print(llm_answer)
-#     pred_obj = sts_predict_score()
-#     score = pred_obj.predict(llm_answer, student_answer)
-#     print(score)
-#     response = { 'question': question , 'student_answer': student_answer , 
-#                  'llm_answer':llm_answer , 'score': str(score)}
-#     return response
-
 def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
     try:
         # Create ResponseObj instance with appropriate data types
@@ -75,7 +56,12 @@ def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
     except (KeyError, ValueError) as e:  # Handle potential missing data or type errors
         print(f"Error converting row: {row.to_dict()}. Exception: {e}")
         
-    
+def extract_result(message: str): 
+    # print("\n...........", type(message.content), "\nFeedback" in str(message.content))
+    if "\nFeedback" in str(message):
+        return [s.split(":")[1].strip() if "Answer:" in s else s.strip() for s in message.split("\nFeedback:")]
+    else:
+        return message    
     
 @api_router.post("/validate_answers", response_model=schemas.PredictionResults)
 async def validate_answers(input_data: schemas.MultipleDataInputs):
@@ -111,11 +97,16 @@ async def validate_answers(input_data: schemas.MultipleDataInputs):
         s1 = row['user_input']
         s2 = row['llm_answer']
         
-        input_df.loc[index, 'score']  = pred_obj.predict(s1, s2) #SBERT Comparision
-        answer, feedback = gpt_obj.compare_sentences(q1, s1, s2) #GPT Comparision
-        print("feedback => ", feedback)
-        input_df.loc[index, 'result'] = str(answer).split(":")[1].strip()
-        input_df.loc[index, 'feedback'] = str(feedback).split(":")[1].strip()
+        score = pred_obj.predict(s1, s2) #SBERT Comparision
+        print(round(float(score), 4))
+        
+        message_content = gpt_obj.compare_sentences(q1, s1, s2) #GPT Comparision
+        answer, feedback = extract_result(message_content)
+        print(f"answer => {answer}, feedback => {feedback}" )
+        
+        input_df.loc[index, 'score']  = round(score, 4)
+        input_df.loc[index, 'result'] = answer
+        input_df.loc[index, 'feedback'] =feedback
         
     # print(input_df)
     data_list = input_df.apply(row_to_dict, axis=1).tolist()
