@@ -13,7 +13,7 @@ import os
 from dotenv import load_dotenv
 
 from qna_model.src.vectorstore import VectorStore
-from qna_model.config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, TEMPLATE, TOP_K
+from qna_model.config import LLM_NAME, RETURN_K, SEARCH_TYPE, TEMPERATURE, RAG_PROMPT, TOP_K
 
 class rag_model:
     def __init__(self) -> None:
@@ -25,7 +25,7 @@ class rag_model:
         self.llm = ChatOpenAI(model_name=LLM_NAME, temperature=TEMPERATURE, api_key=self.api_key)
         self.QA_CHAIN_PROMPT = PromptTemplate(
             input_variables=["context", "question"],
-            template=TEMPLATE)
+            template=RAG_PROMPT)
 
     def create_qa_chain(self, llm, retriever):
         return RetrievalQA.from_chain_type(

@@ -22,12 +22,9 @@ from qna_model.src.data_loader import DatasetLoader
 from qna_model.src.qa_chain import rag_model
 from qna_model.sts_predict import sts_predict_score
 from qna_model.pipeline import run_pipeline
+from qna_model.gpt_comparision import gpt_model
 
 api_router = APIRouter()
-
-# class UserQuery(BaseModel):
-#   query: str
-#   user_input: str
 
 @api_router.get("/health", response_model=schemas.Health, status_code=200)
 def health() -> dict:
@@ -40,10 +37,10 @@ def health() -> dict:
 
     return health.dict()
 
-# @api_router.post("/add_to_vectordb")
-# async def predict():
-#    # Todo: Comment below line once vectorstore db is persistent with splits
-#     return run_pipeline()
+@api_router.post("/add_to_vectordb")
+async def predict():
+   # Todo: Comment below line once vectorstore db is persistent with splits
+    return run_pipeline()
     
 @api_router.post("/predict", response_model= Any)
 async def predict(data: schemas.UserQuery):
@@ -70,9 +67,9 @@ def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
             question=row["question"],
             student_answer=row["user_input"],
             llm_answer=row["llm_answer"],
-            gpt_answer= "",
-            result= "",
-            score=float(row["score"]),  # Ensure score is a float
+            result= row["result"],
+            score= row["score"],  # Ensure score is a float
+            feedback= row["feedback"]
         )
         return res
     except (KeyError, ValueError) as e:  # Handle potential missing data or type errors
@@ -84,16 +81,21 @@ def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
 async def validate_answers(input_data: schemas.MultipleDataInputs):
     rm = rag_model()
     pred_obj = sts_predict_score()
+    gpt_obj = gpt_model()
     
     input_df = pd.DataFrame(jsonable_encoder(input_data.inputs))
     input_df['llm_answer'] = None
     input_df['score'] = None 
+    input_df['result'] = None 
+    input_df['feedback'] = None 
     
     # print(input_df.head())
-    print("calling llm to get answers")
+    # print("calling llm to get answers")
+    
     # Get LLM Answer
     questions = input_df['question'].values.tolist()
     llm_answers, errors = rm.get_llm_answers(questions)
+    
     print(llm_answers, errors)
     if not errors is None:
         return {"predictions": [],"version": version_number, "errors": errors}
@@ -103,15 +105,21 @@ async def validate_answers(input_data: schemas.MultipleDataInputs):
             row['llm_answer'] = llm_answers[index][1]
     # print(llm_answers)
 
-    # Compare using sbert
+    # Compare using sbert and gpt
     for index, row in input_df.iterrows():
+        q1 = row['question']
         s1 = row['user_input']
         s2 = row['llm_answer']
-        input_df.loc[index, 'score']  = pred_obj.predict(s1, s2)
-    print(input_df)
+        
+        input_df.loc[index, 'score']  = pred_obj.predict(s1, s2) #SBERT Comparision
+        answer, feedback = gpt_obj.compare_sentences(q1, s1, s2) #GPT Comparision
+        print("feedback => ", feedback)
+        input_df.loc[index, 'result'] = str(answer).split(":")[1].strip()
+        input_df.loc[index, 'feedback'] = str(feedback).split(":")[1].strip()
+        
+    # print(input_df)
     data_list = input_df.apply(row_to_dict, axis=1).tolist()
     print(data_list)
-    # json_data = json.dumps(data_list)
     # return {"predictions": data_list,"version": version_number, "errors": errors}
     return PredictionResults(predictions=data_list, version=version_number, errors=errors)
 

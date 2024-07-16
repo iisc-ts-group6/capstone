@@ -9,9 +9,9 @@ class ResponseObj(BaseModel):
   question: str
   student_answer: str
   llm_answer: str
-  gpt_answer: str
   result: str
   score: float
+  feedback: str
       
 
 class MultipleDataInputs(BaseModel):

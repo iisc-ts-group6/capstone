@@ -5,4 +5,4 @@ requests>=2.23.0,<=2.32.2
 pydantic_settings
 
 # If locally copyied whl file inside qna_model_api then use given below
-qna_model-0.0.3-py3-none-any.whl
+qna_model-0.0.4-py3-none-any.whl

@@ -17,7 +17,7 @@ class sts_predict_score:
     def __init__(self) -> None:
         self.model = st.load_model(HF_FINTUNE_MODEL_PATH)
         
-    def predict(self, sentence1: str, sentence2: str):
+    def predict(self, sentence1: str, sentence2: str) -> float:
         # question = pp.clean_text(question)
         correct_answer = pp.clean_text(sentence1)
         student_answer = pp.clean_text(sentence2)
