@@ -39,15 +39,16 @@ jobs:
         run: |
           mv dist/*whl qna_model_api/
 
+      - name: Build the Docker image for Fastapi app
+        run: docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/qna_api:latest
+      
       - name: Login to Docker hub
         uses: docker/login-action@v3
         with:
             username: ${{ secrets.DOCKER_USER_NAME }}
             password: ${{ secrets.DOCKER_TOKEN }}
       
-      - name: Build the Docker image for Fastapi app
-        run: docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/qna_api:latest
-             
+           
       - name: Push the Docker Image
         run: docker push ${{ secrets.DOCKER_USER_NAME }}/qna_api
 
