@@ -10,16 +10,18 @@ import numpy as np
 import pandas as pd
 import os
 import csv
+from dotenv import load_dotenv
 
 import qna_model.src.preprocessor as pp
-from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH
+from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH, HF_FINTUNE_MODEL_PATH
 
 
 class SBERTModel:
     def __init__(self):
-        self.model =  SentenceTransformer(sts_model_name)
         self.evaluation_metrics = {}
         self.output_model_path= FINETUNE_MODEL_PATH
+        self.model =  SentenceTransformer(sts_model_name)
+        
     
     def load_model(self, model_path):
         self.model = SentenceTransformer(model_path)
@@ -48,16 +50,29 @@ class SBERTModel:
         print(f"pairs: {len(pairs)}, labels: {len(labels)}, examples: {len(examples)}")
         return examples
 
+    def upload_to_hub(self):
+        load_dotenv()
+        hf_token = os.getenv('HuggingFace_Access_Token')
+        print(hf_token)
+        try:
+            self.model.push_to_hub(HF_FINTUNE_MODEL_PATH, token=hf_token)
+            print("upload is success")
+        except Exception as e:
+            print(f"error in uploading. {e}")
+
     def fine_tune(self, train_df: pd.DataFrame, epochs=1, batch_size=16):
         train_examples = self.df_to_input_examples(train_df)
         train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=batch_size)
         train_loss = losses.CosineSimilarityLoss(self.model)
         print("train started...")
+        # self.upload_to_hub()
         self.model.fit(train_objectives=[(train_dataloader, train_loss)], 
                        epochs=epochs, warmup_steps=100, show_progress_bar=True)        
         print("train ended")
         self.model.save(self.output_model_path)
-
+        
+        
+    
     def evaluate(self, data, output_path="output/metrics", phase="fine_tune"):
         # test_dataloader = DataLoader(test_data, shuffle=False, batch_size=batch_size)
         train_examples = self.df_to_input_examples(data)

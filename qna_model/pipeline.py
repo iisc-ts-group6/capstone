@@ -10,7 +10,7 @@ import os
 from qna_model.src.qa_chain import rag_model
 from qna_model.src.vectorstore import VectorStore
 from qna_model.src.data_loader import DatasetLoader
-from qna_model.src.preprocessor import split_documents, preprocess_docs
+from qna_model.src.preprocessor import split_documents
 from qna_model.config import DOCUMENTS_DIRECTORY
 
 def run_pipeline():
@@ -26,7 +26,8 @@ def run_pipeline():
     data_loader = DatasetLoader()
     docs = data_loader.load_pdfs(pdf_directory)
     print(f'loaded documents are: {len(docs)}')
-    docs = preprocess_docs(docs)
+    
+    # docs = preprocess_docs(docs)
     
     #2.split into chunks    
     splits = split_documents(docs)

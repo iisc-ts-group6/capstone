@@ -21,6 +21,7 @@ from qna_model.src.data_loader import DatasetLoader
 from qna_model.src.qa_chain import rag_model
 from qna_model.sts_predict import sts_predict_score
 from qna_model.pipeline import run_pipeline
+from qna_model.sts_pipeline import run_sts_pipeline
 from qna_model.gpt_comparision import gpt_model
 
 api_router = APIRouter()
@@ -36,9 +37,12 @@ def health() -> dict:
 
     return health.dict()
 
+@api_router.post("/train_sbert")
+async def train():
+    return run_sts_pipeline()
+
 @api_router.post("/add_to_vectordb")
-async def predict():
-   # Todo: Comment below line once vectorstore db is persistent with splits
+async def vectorstore():
     return run_pipeline()
     
 def row_to_dict(row: pd.Series) -> schemas.ResponseObj:
@@ -115,10 +119,10 @@ async def validate_answers(input_data: schemas.MultipleDataInputs):
     return PredictionResults(predictions=data_list, version=version_number, errors=errors)
 
 
-@api_router.get("/getquestions", response_model= Any)
-async def getquestions():
-    dl = DatasetLoader()
-    test_df = dl.load_xlsx_dataset(dl.mastersheet_location)
-    random_rows = test_df.sample(5)
-    response = random_rows['Question'].to_list()
-    return response
+# @api_router.get("/getquestions", response_model= Any)
+# async def getquestions():
+#     dl = DatasetLoader()
+#     test_df = dl.load_xlsx_dataset(dl.mastersheet_location)
+#     random_rows = test_df.sample(5)
+#     response = random_rows['Question'].to_list()
+#     return response

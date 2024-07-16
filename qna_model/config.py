@@ -24,6 +24,7 @@ EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2'
 sts_model_name="all-MiniLM-L6-v2"
 FINETUNE_MODEL_PATH = f'trained_models/{sts_model_name}_finetuned'
 HF_FINTUNE_MODEL_PATH = 'msamg/sts_qna_model'
+HF_DATASET_PATH = "msamg/QnA_Descriptive"
 # Training configurations
 BATCH_SIZE = 16
 EPOCHS = 1
