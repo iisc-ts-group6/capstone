@@ -1,4 +1,4 @@
-name: QnA CI/CD
+name: QnA CI
 
 on:
   # push:
@@ -19,13 +19,37 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r requirements/requirements.txt
 
-      - name: Execute main script
+      - name: Execute predict script
         run: |
-          python3 scripts/main.py
+          python qna_model/rag_predict.py
+
+      - name: Execute build script
+        run: |
+          python -m pip install --upgrade build
+          python -m build
+      
+      - name: Move .whl file to API directory
+        run: |
+          mv dist/*whl qna_model_api/
+
+      - name: Login to Docker hub
+        env:
+            DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
+            DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+    
+      - name: Build the Docker image for Fastapi app
+        run: docker build . -f Dockerfile -t $DOCKER_USER/qna-api:latest
+    
+      - name: Push the Docker Image
+        run: docker push $DOCKER_USER/qna-api
+
+      - name: Logout to Docker hub
+        run: docker logout
