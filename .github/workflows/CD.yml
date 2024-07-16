@@ -2,10 +2,14 @@ name: CD Pipeline
 
 # Only trigger, when the build workflow succeeded i.e. CI Pipeline
 on:
-  workflow_run:
-    workflows: ["QnA CI"]
-    types:
-      - completed
+    push:
+      branches:
+        - main
+
+  # workflow_run:
+  #   workflows: ["QnA CI"]
+  #   types:
+  #     - completed
 
 jobs:
   deploy:
@@ -23,4 +27,5 @@ jobs:
       - name: Run Docker Container
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker run -it -d -p 8001:8001 --name qna-fastapi-container $DOCKER_USER/qna_api:latest
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: sudo docker run -it -d -p 8001:8001 -e ${{ secrets.OPENAI_API_KEY }} --name qna-fastapi-container $DOCKER_USER/qna_api:latest
