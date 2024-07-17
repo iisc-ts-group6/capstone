@@ -1,0 +1,52 @@
+<div style="min-height: 80vh; padding: 10px; background-color: aliceblue;">
+    <div class="card">
+        <div style="display: flex; justify-content: center;">
+            <!-- <p style="width: 80%; color: var(--secondary-color); margin: 0;"><span style="background-color: var(--primary-color); padding: 10px; text-align: center;" class="inner-card"><mat-icon>dashboard</mat-icon>Dashboard</span></p> -->
+            <p style="padding: 5px; cursor: pointer; background-color: var(--primary-color); color: var(--secondary-color);" routerLink="dashboard"
+                class="menu-list-item card-header">
+                <mat-icon>question_answer</mat-icon>
+                <span style="margin-left: 5px;">{{assessmentId}}</span>
+            </p>
+        </div>
+        <div style="display: flex; justify-content: center; height: 50%;">
+            <div style="width: 100%;display: flex; justify-content: center;">
+                <div style="width: 100%;">
+                    <div style="display: flex; width: 100%;">
+                        <div style="width: 40%; padding: 10px;">
+                            <div *ngFor="let question of QUESTIONS; let i = index;">
+                                <p *ngIf="i==position" style="background-color: aqua; padding: 10px;">
+                                    <span>{{question.position}}. </span><span>{{question.question}}</span>
+                                </p>
+                                <p *ngIf="i!=position" style="background-color: lavender; padding: 10px;">
+                                    <span>{{question.position}}. </span><span>{{question.question}}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div style="width: 60%; padding-top: 10px; padding-right: 10px; padding-bottom: 10px;">
+                            <div style="background-color: lavender; padding-left: 20px; padding-right: 20px;">
+                                <p style="padding: 10px;"><span>{{QUESTIONS[position].position}}.
+                                    </span>{{QUESTIONS[position].question}}</p>
+                                <textarea style="width: 100%; height: 185px; margin-bottom: 20px;"
+                                    [(ngModel)]="QUESTIONS[position].given_answer">
+                                </textarea>
+                                <div>
+                                    <button *ngIf="position==0" disabled style="margin-bottom: 20px; cursor: pointer;"
+                                        class="button">Previous</button>
+                                    <button *ngIf="position!=0"
+                                        style="cursor: pointer; background-color: var(--primary-color); margin-bottom: 20px; color: var(--secondary-color);"
+                                        class="button" (click)="previous()">Previous</button>
+                                    <button *ngIf="position== QUESTIONS.length - 1"
+                                        style="cursor: pointer; background-color: #04AA6D; margin-bottom: 20px; margin-left: 10px; color: var(--secondary-color);"
+                                        (click)="next()" class="button">Submit</button>
+                                    <button *ngIf="position!= QUESTIONS.length - 1"
+                                        style="cursor: pointer; background-color: var(--primary-color); margin-bottom: 20px; margin-left: 10px; color: var(--secondary-color);"
+                                        (click)="next()" class="button">Next</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
