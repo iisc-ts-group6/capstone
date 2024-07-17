@@ -119,10 +119,9 @@ async def validate_answers(input_data: schemas.MultipleDataInputs):
     return PredictionResults(predictions=data_list, version=version_number, errors=errors)
 
 
-# @api_router.get("/getquestions", response_model= Any)
-# async def getquestions():
-#     dl = DatasetLoader()
-#     test_df = dl.load_xlsx_dataset(dl.mastersheet_location)
-#     random_rows = test_df.sample(5)
-#     response = random_rows['Question'].to_list()
-#     return response
+@api_router.get("/getquestions", response_model= Any)
+async def getquestions(filename: str, num_of_questions: int):
+    dl = DatasetLoader()
+    questions = dl.get_random_questions(datafile=filename, num=num_of_questions)
+    print(questions)
+    return questions

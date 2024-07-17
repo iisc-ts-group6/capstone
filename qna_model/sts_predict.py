@@ -7,7 +7,7 @@ sys.path.append(str(root))
 from src.sbert_model import SBERTModel
 from src.data_loader import DatasetLoader
 from src.preprocessor import clean_text, convert_to_pairs
-from config import HF_FINTUNE_MODEL_PATH
+from qna_model.config import HF_FINTUNE_MODEL_PATH
 import pandas as pd
 import json
 

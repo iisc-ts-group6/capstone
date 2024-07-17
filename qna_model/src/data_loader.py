@@ -7,11 +7,10 @@ sys.path.append(str(root))
 import pandas as pd
 from datasets import load_dataset
 from langchain_community.document_loaders import PyPDFLoader
-import random
-import os
+import os, random
 from sklearn.model_selection import train_test_split
 
-from config import DATASET_PATH, SBERT_TEST_DS,  HF_DATASET_PATH
+from qna_model.config import DATASET_PATH, SBERT_TEST_DS,  HF_DATASET_PATH
 
 
 class DatasetLoader:
@@ -87,9 +86,24 @@ class DatasetLoader:
         eval_df, test_df = train_test_split(temp_df, test_size=eval_size, random_state=random_state)
         return train_df, eval_df, test_df
     
-    def get_random_question(self):
-        df = self.load_dataset()
-        random_index = random.randint(0, len(df) - 1)
-        question = df.iloc[random_index][0]
-        return question
+    def get_random_questions(self, datafile, num=5):
+        questions = []
+        try:
+                
+            print(datafile)
+            ds2 = load_dataset(path=HF_DATASET_PATH, data_files=datafile)
+            questions = ds2['train']['Question']
+        except ValueError as e:
+            print(e)
+            questions = []
+            
+        if datafile == "" or len(questions) == 0:
+            print('loading from test')
+            ds = load_dataset(HF_DATASET_PATH, split="test")
+            questions = ds['Question']
+        
+        # random_index = random.randint(0, len(df) - 1)
+        # sample_df = df.to_pandas().sample(n=num)
+        questions =[str(s).strip() for s in random.sample(questions, num)]
+        return questions
 

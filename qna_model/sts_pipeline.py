@@ -9,7 +9,7 @@ sys.path.append(str(root))
 from src.sbert_model import SBERTModel
 from src.data_loader import DatasetLoader
 from src.preprocessor import convert_to_pairs
-from config import BATCH_SIZE, EPOCHS, train_test_split_size
+from qna_model.config import BATCH_SIZE, EPOCHS, train_test_split_size
 
 
 def run_sts_pipeline():
