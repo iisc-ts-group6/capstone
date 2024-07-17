@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AppConstants } from '../app-constants';
@@ -14,12 +14,16 @@ export interface Question {
   providedIn: 'root'
 })
 export class BackendApisService {
-  private apiUrl = AppConstants.baseURL + '/api/answers-from-candidate';
+  private apiUrl = AppConstants.baseURL + '/api/v1/validate_answers';
   
   constructor(private http: HttpClient) { }
 
-  postAnswersFromCandidate(attemptedQuestion: Question[]): Observable<any> {
-    return this.http.post<any>(this.apiUrl, attemptedQuestion).pipe(
+  postAnswersFromCandidateAndGetResult(inputs: any): Observable<any> {
+    const body = { inputs: inputs.questionAnswerSetFromStudent };
+    console.log(body);
+    console.log('body >>>>>>>>> ');
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post<any>(this.apiUrl, body, { headers: headers }).pipe(
       catchError(this.handleError)
     );
   }

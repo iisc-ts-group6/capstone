@@ -35,20 +35,50 @@ export class AttemptQuestionComponent implements OnInit {
   constructor(private backendApisService: BackendApisService) {
 
   }
+  
   ngOnInit(): void {
-    this.backendApisService.getAnswersFromCandidate().subscribe(
-      response => {
-        this.ASSESTMENT = response.answerFromLLMModel;
-        for(let i = 0; i < this.ASSESTMENT.length; i++) {
-          this.ASSESTMENT[i].position = i+1;
-        }
-        this.isVisible = true;
-        this.dataSource = new MatTableDataSource(this.ASSESTMENT);      
-      },
-      error => {
-        console.error('Error:', error);
-      }
-    );
+    let results = localStorage.getItem('results') ?? '';
+    let parsedResults = JSON.parse(results);
+    console.log("parsedResults >>>>>>>>>>>>");
+    console.log(parsedResults);
+    this.ASSESTMENT = [];
+    for(let i = 0; i < parsedResults.length; i++) {
+      console.log(parsedResults[i].question);
+      this.ASSESTMENT[i] = {
+        position: i + 1,
+        question: parsedResults[i].question,
+        student_answer: parsedResults[i].student_answer,
+        llm_answer: parsedResults[i].llm_answer,
+        gpt_result: parsedResults[i].result,
+        gpt_feedback: parsedResults[i].feedback,
+        sbert_result: '',
+        score: parsedResults[i].score.toString()
+      };
+  
+    }
+    this.isVisible = true;
+    this.dataSource = new MatTableDataSource(this.ASSESTMENT);  
+    // this.backendApisService.getAnswersFromCandidate().subscribe(
+    //   response => {
+    //     this.ASSESTMENT = [];
+    //     let results = localStorage.getItem('results') ?? '';
+    //     let parsedResults = JSON.parse(results);
+    //     for(let i = 0; i < parsedResults.length; i++) {
+    //       this.ASSESTMENT[i].position = i+1;
+    //       this.ASSESTMENT[i].question = parsedResults[i].question;
+    //       this.ASSESTMENT[i].student_answer = parsedResults[i].question;
+    //       this.ASSESTMENT[i].llm_answer = parsedResults[i].question;
+    //       this.ASSESTMENT[i].gpt_result = parsedResults[i].question;
+    //       this.ASSESTMENT[i].gpt_feedback = parsedResults[i].question;
+    //       this.ASSESTMENT[i].score = parsedResults[i].question;
+    //     }
+    //     this.isVisible = true;
+    //     this.dataSource = new MatTableDataSource(this.ASSESTMENT);      
+    //   },
+    //   error => {
+    //     console.error('Error:', error);
+    //   }
+    // );
     //let assessment: string = localStorage.getItem('attemptedQuestions') ?? '';
     this.isOverAllResultPass = this.isGreaterThanOrPassingPercentage(this.calculateTotalPercentage(this.ASSESTMENT));
   }
