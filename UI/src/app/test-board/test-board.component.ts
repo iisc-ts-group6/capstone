@@ -32,11 +32,11 @@ export class TestBoardComponent {
       data => {
         this.QUESTIONS = [];
         console.log(data);
-        for(let i = 0; i<=data.items.length -1; i++) {
+        for (let i = 0; i <= data.length - 1; i++) {
           this.QUESTIONS.push({
             position: i + 1,
-            question: data.items[i].question,
-            nlp_answer: data.items[i].answer,
+            question: data[i],
+            nlp_answer: '',
             given_answer: '',
             result: Math.floor(Math.random() * 100).toString()
           });
@@ -61,15 +61,30 @@ export class TestBoardComponent {
     } else {
       let attemptedQuestion: string = JSON.stringify(this.QUESTIONS, null, 2);
       console.log(attemptedQuestion);
-      localStorage.setItem('attemptedQuestions', attemptedQuestion);
-      this.backendApisService.postAnswersFromCandidate(this.QUESTIONS).subscribe(
+
+      let body = this.formQuestionAnswerSet(this.QUESTIONS);
+      this.backendApisService.postAnswersFromCandidateAndGetResult(body).subscribe(
         response => {
+          localStorage.setItem('results', JSON.stringify(response.predictions));
           this.router.navigateByUrl('/attempt-question');
         },
         error => {
           console.error('Error:', error);
         }
       );
+    }
+  }
+
+  formQuestionAnswerSet(question: Question[]): any {
+    let questionAnswerSetFromStudent: any = [];
+    for (let i = 0; i < question.length; i++) {
+      questionAnswerSetFromStudent[i] = {}; // Initialize each element as an object
+      questionAnswerSetFromStudent[i].question = question[i].question;
+      questionAnswerSetFromStudent[i].user_input = question[i].given_answer;
+    }
+
+    return {
+      questionAnswerSetFromStudent
     }
   }
 }
