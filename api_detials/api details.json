@@ -1,7 +1,24 @@
-request url: http://localhost:8001/api/v1/validate_answers
+request url: Http Get
+http://localhost:8001/api/v1/getquestions?filename=master_sheet_use.csv&num_of_questions=5
+
+parameters: 
+filename - hugging_dataset_facename
+num_of_questions - num of random questions to be retreived
+
+response:
+[
+    "What can be seen when observing a drop of water from moist soil under a microscope?",
+    "Is the mother responsible for the sex of her child?",
+    "What is the result of the fusion of male and female gametes?",
+    "Why did the person put dried neem leaves in the iron drum containing wheat?",
+    "How can we protect ourselves from diseases spread by mosquitoes?"
+]
+
+
+request url: Http Post
+http://localhost:8001/api/v1/validate_answers
 
 request body:
-
 
 {
     "inputs": [
