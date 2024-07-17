@@ -4,7 +4,7 @@
             <!-- <p style="width: 80%; color: var(--secondary-color); margin: 0;"><span style="background-color: var(--primary-color); padding: 10px; text-align: center;" class="inner-card"><mat-icon>dashboard</mat-icon>Dashboard</span></p> -->
             <p style="padding: 5px; cursor: pointer; background-color: var(--primary-color); color: var(--secondary-color);" routerLink="dashboard"
                 class="menu-list-item card-header"><mat-icon>question_answer</mat-icon><span
-                    style="margin-left: 5px;">Attempt Questions</span></p>
+                    style="margin-left: 5px;">Results</span></p>
 
         </div>
         <div *ngIf="isVisible" style="display: flex; justify-content: center; width: 100%;">
@@ -57,13 +57,13 @@
                         </ng-container>
 
                          <!-- Symbol Column -->
-                         <ng-container matColumnDef="sbert_result">
+                         <!-- <ng-container matColumnDef="sbert_result">
                             <th mat-header-cell *matHeaderCellDef> SBERT Result </th>
                             <td mat-cell *matCellDef="let element">
                                 <span *ngIf="element.sbert_result == 'Correct'" style="font-weight: bold; color: green;">{{element.sbert_result}}</span>
                                 <span *ngIf="element.sbert_result != 'Correct'" style="font-weight: bold; color: red;">{{element.sbert_result}}</span>
                             </td>
-                        </ng-container>
+                        </ng-container> -->
 
                          <!-- Symbol Column -->
                          <ng-container matColumnDef="gpt_feedback">
@@ -90,7 +90,6 @@
                     <div>
                         <p style="font-weight: bold; margin-bottom: 0;">Result</p>
                         <p style="margin: 0; margin-left: 20px;">Over all comparision score: <span style="font-weight: bold; color: var(--primary-color);">{{calculateTotalPercentage(ASSESTMENT)}}</span></p>
-                        <p style="margin: 0; margin-left: 20px;">Status: <span *ngIf="!isOverAllResultPass" style="font-weight: bold; color: red;">Fail</span><span *ngIf="isOverAllResultPass" style="font-weight: bold; color: green;">Pass</span></p>
                     </div>
                     <!-- <mat-paginator length="5" [pageSize]="5" aria-label="Select page of GitHub search results"></mat-paginator> -->
                 </div>

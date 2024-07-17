@@ -24,6 +24,11 @@ export class SideNavComponent {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentUrl = event.urlAfterRedirects;
+        if(this.currentUrl.indexOf('/results') > -1) {
+          this.selectedMenu = 'results';
+        } else if (this.currentUrl.indexOf('/dashboard') > -1){
+          this.selectedMenu = 'dashboard';
+        }
         console.log(this.currentUrl)
         if (typeof window !== 'undefined') { // Check if window is defined
           this.email = localStorage.getItem("email") ?? '';

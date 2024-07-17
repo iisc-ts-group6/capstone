@@ -13,15 +13,7 @@ export interface Assessment {
 export class DashboardComponent {
   ASSESSMENTS: Assessment[] = [
     { position: 1, assessmentId: 'Assessment - 1', assessmentName: 'Assessment - 1' },
-    { position: 2, assessmentId: 'Assessment - 2', assessmentName: 'Assessment - 2' },
-    { position: 3, assessmentId: 'Assessment - 3', assessmentName: 'Assessment - 3' },
-    { position: 4, assessmentId: 'Assessment - 4', assessmentName: 'Assessment - 4' },
-    { position: 5, assessmentId: 'Assessment - 5', assessmentName: 'Assessment - 5' },
-    { position: 6, assessmentId: 'Assessment - 6', assessmentName: 'Assessment - 6' },
-    { position: 7, assessmentId: 'Assessment - 7', assessmentName: 'Assessment - 7' },
-    { position: 8, assessmentId: 'Assessment - 8', assessmentName: 'Assessment - 8' },
-    { position: 9, assessmentId: 'Assessment - 9', assessmentName: 'Assessment - 9' },
-    { position: 10, assessmentId: 'Assessment - 10', assessmentName: 'Assessment - 10' },
+    { position: 2, assessmentId: 'Assessment - 2', assessmentName: 'Assessment - 2' }
   ];
   disableSelect = new FormControl(false);
   selectedAssessmentId: number = 1;
