@@ -1,6 +1,7 @@
 name: QnA CI
 
-# on:
+on:
+ workflow_dispatch:
 #    push:
 #      branches:
 #        - main
@@ -24,24 +25,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/requirements.txt
+          #pip install -r requirements/requirements.txt
 
-      # - name: Execute predict script
+
+      # - name: Execute build script
       #   run: |
-      #     python qna_model/rag_predict.py
-
-      - name: Execute build script
-        run: |
-          python -m pip install --upgrade build
-          python -m build
+      #     python -m pip install --upgrade build
+      #     python -m build
       
-      - name: Move .whl file to API directory
-        run: |
-          mv dist/*whl qna_model_api/
+      # - name: Move .whl file to API directory
+      #   run: |
+      #     mv dist/*whl qna_model_api/
 
-      - name: Build the Docker image for Fastapi app
-        run: docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/qna_api:latest
-      
+      # - name: Build the Docker image for Fastapi app
+      #   run: docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/qna_api:latest
+
       - name: Login to Docker hub
         uses: docker/login-action@v3
         with:
@@ -49,8 +47,14 @@ jobs:
             password: ${{ secrets.DOCKER_TOKEN }}
       
            
-      - name: Push the Docker Image
-        run: docker push ${{ secrets.DOCKER_USER_NAME }}/qna_api
+      # - name: Push the Docker Image
+      #   run: docker push ${{ secrets.DOCKER_USER_NAME }}/qna_api
+
+      - name: Build and Push Docker image for Angular app
+        run: |
+          cd UI
+          docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/angular-api:latest 
+          docker push ${{ secrets.DOCKER_USER_NAME }}/angular-api
 
       - name: Logout to Docker hub
         run: docker logout
