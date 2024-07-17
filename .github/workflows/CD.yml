@@ -19,7 +19,7 @@ jobs:
       - name: Delete Docker Image
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker rmi $DOCKER_USER/qna_api
+        run: sudo docker rmi $DOCKER_USER/qna_api || true
 
     
       - name: Pull Docker Image
