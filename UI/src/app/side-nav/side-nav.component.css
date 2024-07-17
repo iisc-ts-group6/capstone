@@ -1,0 +1,90 @@
+.example-container {
+  height: 90%;
+  border-top: 1px solid var(--secondary-color);
+}
+
+.example-sidenav-content {
+  display: flex;
+  height: 96.7%;
+  width: 100%;
+
+}
+
+.example-toolbar {
+  background: var(--primary-color);
+}
+
+.example-sidenav {
+  user-select: none;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.menu-button {
+  transition: 300ms ease-in-out;
+  transform: rotate(0deg);
+}
+
+.menu-button.rotated {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  overflow-y: hidden;
+  transition: transform 300ms ease;
+  transform: scaleY(0);
+  transform-origin: top;
+  padding-left: 30px;
+}
+
+.submenu.expanded {
+  transform: scaleY(1);
+}
+
+.menu-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.example-app-name {
+  color: var(--secondary-color);
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  background-color: var(--primary-color);
+}
+
+.inner-card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  border-radius: 3px;
+  padding: 5px;
+  margin: 10px;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.inner-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card-user{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  border-radius: 3px;
+  background-color: var(--secondary-color);
+  margin: 5px;
+  padding: 5px;
+}
+
+.card-user:hover {
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}

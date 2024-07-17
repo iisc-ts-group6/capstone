@@ -1,0 +1,39 @@
+<div class="sign-in-container">
+    <div class="card">
+        <h1 style="margin: 0; color: green;">Welcome Back</h1>
+        <p style="margin: 0; margin-bottom: 20px;">Please enter your Email and Password</p>
+        <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+            <mat-form-field style="align-items: center;" appearance="outline" class="full-width">
+                <mat-label>E-mail</mat-label>
+                <input matInput placeholder="example@mail.com" formControlName="email" type="email">
+                <mat-icon matSuffix>dashboard</mat-icon>
+                <mat-error style="color: red;" *ngIf="signInForm.get('email')?.hasError('required')">
+                  Email is <strong>required</strong>
+                </mat-error>
+                <mat-error style="color: red;" *ngIf="signInForm.get('email')?.hasError('email')">
+                  Please enter a valid <strong>email address</strong>
+                </mat-error>
+              </mat-form-field>
+        
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Password</mat-label>
+                <input matInput placeholder="6+ strong character" formControlName="password" type="password">
+                <mat-icon matSuffix>lock</mat-icon>
+                <mat-error style="color: red;" *ngIf="signInForm.get('password')?.hasError('required')">
+                  Password is <strong>required</strong>
+                </mat-error>
+                <mat-error style="color: red;" *ngIf="signInForm.get('password')?.hasError('minlength')">
+                  Password must be at least <strong>6 characters</strong>
+                </mat-error>
+          </mat-form-field>
+      
+          <button mat-raised-button style="background-color: var(--primary-color); color: var(--secondary-color); margin: 0;" class="full-width">Login</button>
+          <p style="margin-top: 5px;"><span style="float: left;">Dont have a account yet?</span><span style="float: right;"><a href="/">Create Account</a></span></p>
+        </form>
+        <!-- <div class="sign-up-option">
+          Or sign up with
+        </div> -->
+    </div>
+    
+  </div>
+  
