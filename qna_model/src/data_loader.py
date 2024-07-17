@@ -93,7 +93,7 @@ class DatasetLoader:
             print(datafile)
             ds2 = load_dataset(path=HF_DATASET_PATH, data_files=datafile)
             questions = ds2['train']['Question']
-        except ValueError as e:
+        except Exception as e:
             print(e)
             questions = []
             
