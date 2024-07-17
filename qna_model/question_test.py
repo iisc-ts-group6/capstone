@@ -2,7 +2,7 @@ from src.data_loader import DatasetLoader
 
 dl = DatasetLoader()
 
-random_questions = dl.get_random_questions(datafile="master_sheet_use.csv", num=5)
+random_questions = dl.get_random_questions(datafile="sample1.csv", num=6)
 
 print(random_questions)
 

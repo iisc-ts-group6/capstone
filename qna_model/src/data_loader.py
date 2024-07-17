@@ -97,11 +97,12 @@ class DatasetLoader:
             print(e)
             questions = []
             
-        if datafile == "" or len(questions) == 0:
+        if datafile == "" or len(questions) != num:
             print('loading from test')
             ds = load_dataset(HF_DATASET_PATH, split="test")
             questions = ds['Question']
-        
+            
+        print(f"total questions = {len(questions)}")
         # random_index = random.randint(0, len(df) - 1)
         # sample_df = df.to_pandas().sample(n=num)
         questions =[str(s).strip() for s in random.sample(questions, num)]
