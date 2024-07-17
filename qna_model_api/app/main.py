@@ -40,14 +40,17 @@ app.include_router(root_router)
 
 
 # Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+origins = ["*"]
+# allowed_origins = ["http://localhost:3000", "https://your-production-frontend.com"]
+
+# if settings.BACKEND_CORS_ORIGINS:
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= origins, #[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 if __name__ == "__main__":
