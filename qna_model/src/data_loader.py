@@ -97,7 +97,7 @@ class DatasetLoader:
             print(e)
             questions = []
             
-        if datafile == "" or len(questions) != num:
+        if datafile == "" or len(questions) < num:
             print('loading from test')
             ds = load_dataset(HF_DATASET_PATH, split="test")
             questions = ds['Question']
