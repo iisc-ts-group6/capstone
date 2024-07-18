@@ -44,9 +44,9 @@ class gpt_model:
             Follow below instructions before classifying the answer:
                 1. Consider that the student answer and actual answer are from 8th grade science domain, biology subject. 
                 2. Consider only by capturing semantic meaning between correct answer and student answer.
-                4. Evaluate answer as "correct" when student answer correctly conveys the main idea.
+                3. Evaluate answer as "correct" when student answer correctly conveys the main idea.
                 
-            Answer:Positive/Neutral/Negative
+            Answer:Correct/Partially Correct/Incorrect
             Feedback:
             """
         
