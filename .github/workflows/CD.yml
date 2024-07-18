@@ -17,8 +17,10 @@ jobs:
     runs-on: self-hosted
 
     steps:        
-      - name: Delete Old Docker Container for QnA Model
-        run: sudo docker rm -f qna-fastapi-container || true
+      - name: Stop and Delete Old Docker Container for QnA Model
+        run: |
+         sudo docker stop qna-fastapi-container
+         sudo docker rm -f qna-fastapi-container || true
         
       - name: Delete Docker Image for QnA Model
         env: 
@@ -38,7 +40,9 @@ jobs:
 
            
       - name: Delete Old Angular Docker Container
-        run: sudo docker rm -f angular-api-container || true
+        run: |
+          sudo docker stop angular-api-container || true
+          sudo docker rm -f angular-api-container || true
  
      
       - name: Pull Docker Image for Angular API
