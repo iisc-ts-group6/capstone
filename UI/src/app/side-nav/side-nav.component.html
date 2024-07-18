@@ -3,7 +3,7 @@
         <button *ngIf="currentUrl!='/auth/sign-in'" mat-icon-button (click)="isShowing = !isShowing"><mat-icon
                 style="color: var(--secondary-color);">menu</mat-icon></button>
         <div style="display: flex; width: 100%;">
-            <h2 style="width: 80%;" class="example-app-name">Assessment Portal</h2>
+            <h2 style="width: 80%;" class="example-app-name">Answer Analysis Engine</h2>
             <div style="width: 20%; display: flex; align-items: center; justify-content: end;">
                 <div *ngIf="currentUrl!='/auth/sign-in'" style="display: flex;" >
                     <div style="display: flex; cursor: pointer; background-color: var(--success-color);" class="card-user">
@@ -32,17 +32,18 @@
                 <p *ngIf="selectedMenu != 'dashboard'" (click)="menuSelected('dashboard')"
                     style="cursor: pointer; color: var(--secondary-color);" routerLink="dashboard" class="menu-list-item inner-card">
                     <mat-icon>dashboard</mat-icon><span style="margin-left: 5px;" *ngIf="isShowing">Dashboard</span></p>
-                <p *ngIf="selectedMenu == 'attemptQuestion'" (click)="menuSelected('attemptQuestion')"
-                    style="cursor: pointer; background-color: var(--secondary-color); color: var(--primary-color);" routerLink="attempt-question"
+                <p *ngIf="selectedMenu == 'results'" (click)="menuSelected('results')"
+                    style="cursor: pointer; background-color: var(--secondary-color); color: var(--primary-color);" routerLink="results"
                     class="menu-list-item inner-card"><mat-icon>question_answer</mat-icon><span
-                        style="margin-left: 5px;" *ngIf="isShowing">Attempt Question </span></p>
-                <p *ngIf="selectedMenu != 'attemptQuestion'" (click)="menuSelected('attemptQuestion')"
-                    style="cursor: pointer; color: var(--secondary-color);" routerLink="attempt-question"
+                        style="margin-left: 5px;" *ngIf="isShowing">Results </span></p>
+                <p *ngIf="selectedMenu != 'results'" (click)="menuSelected('results')"
+                    style="cursor: pointer; color: var(--secondary-color);" routerLink="results"
                     class="menu-list-item inner-card"><mat-icon>question_answer</mat-icon><span
-                        style="margin-left: 5px;" *ngIf="isShowing">Attempt Question
+                        style="margin-left: 5px;" *ngIf="isShowing">Results
                     </span></p>
             </mat-nav-list>
         </mat-sidenav>
+        <app-loader></app-loader>
         <router-outlet></router-outlet>
     </mat-sidenav-container>
 </div>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CsvApisService } from '../services/csv-apis.service';
 import { BackendApisService } from '../services/backend-apis.service';
+import { LoadingService } from '../services/loading.service';
 export interface Question {
   position: number;
   question: string;
@@ -18,16 +19,19 @@ export interface Question {
 export class TestBoardComponent {
   assessmentId: string | null = null;
   errorMessage: string | null = null;
-  constructor(private router: Router, private route: ActivatedRoute, private csvApisService: CsvApisService, private backendApisService: BackendApisService) { }
+  constructor(private router: Router, private route: ActivatedRoute, private csvApisService: CsvApisService, private backendApisService: BackendApisService, private loadingService: LoadingService) { }
   position: number = 0;
   QUESTIONS!: Question[];
+  isVisible: boolean = false;
   ngOnInit() {
+    this.loadingService.show();
     this.route.paramMap.subscribe(params => {
       this.assessmentId = 'Assessment ID: ' + params.get('id');
       this.fetchQuestions();
     });
   }
   fetchQuestions(): void {
+    
     this.csvApisService.getQuestions().subscribe(
       data => {
         this.QUESTIONS = [];
@@ -40,10 +44,15 @@ export class TestBoardComponent {
             given_answer: '',
             result: Math.floor(Math.random() * 100).toString()
           });
-
+          
           console.log(this.QUESTIONS[i].position);
         }
         console.log(this.QUESTIONS);
+        this.loadingService.hide();
+        if(this.QUESTIONS.length > 0) {
+          this.isVisible = true;
+        }
+        
         // this.QUESTIONS = data.items
       },
       error => this.errorMessage = error
@@ -63,10 +72,12 @@ export class TestBoardComponent {
       console.log(attemptedQuestion);
 
       let body = this.formQuestionAnswerSet(this.QUESTIONS);
+      this.loadingService.show();
       this.backendApisService.postAnswersFromCandidateAndGetResult(body).subscribe(
         response => {
           localStorage.setItem('results', JSON.stringify(response.predictions));
-          this.router.navigateByUrl('/attempt-question');
+          this.loadingService.hide();
+          this.router.navigateByUrl('/results');
         },
         error => {
           console.error('Error:', error);

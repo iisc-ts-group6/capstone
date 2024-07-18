@@ -9,7 +9,8 @@ import { AppConstants } from '../app-constants';
 })
 export class CsvApisService {
 
-  private apiUrl =  AppConstants.baseURL + '/api/v1/getquestions?filename=master_sheet_use.csv&num_of_questions=5';
+  //private apiUrl =  AppConstants.baseURL + '/api/v1/getquestions?filename=master_sheet_use.csv&num_of_questions=5';
+  private apiUrl =  AppConstants.baseURL + '/api/v1/getquestions?filename=sample1.csv&num_of_questions=5';
 
   constructor(private http: HttpClient) { }
 
