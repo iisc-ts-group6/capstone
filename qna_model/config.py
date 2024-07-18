@@ -27,7 +27,9 @@ HF_FINTUNE_MODEL_PATH = 'msamg/sts_qna_model'
 HF_DATASET_PATH = "msamg/QnA_Descriptive"
 # Training configurations
 BATCH_SIZE = 16
-EPOCHS = 1
+EPOCHS = 10
+WARMUP_STEPS = 100
+
 TEMPERATURE = 0
 GPT_MAX_TOKENS = 150
 TOP_K = 5

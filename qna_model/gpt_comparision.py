@@ -34,17 +34,34 @@ class gpt_model:
             Answer:Correct/Incorrect/Partially Correct
             Feedback:
             """
+        GPT_COMPARISION_PROMPT2 = f"""
+            Question: "{question}"
+            Student's answer: "{student_answer}"
+            Actual answer: "{llm_answer}"
+            
+            Assume that you are an 8th grade Teacher to evaluate student's answer against the actual answer provided.
+
+            Follow below instructions before classifying the answer:
+                1. Consider that the student answer and actual answer are from 8th grade science domain, biology subject. 
+                2. Consider only by capturing semantic meaning between correct answer and student answer.
+                4. Evaluate answer as "correct" when student answer correctly conveys the main idea.
+                
+            Answer:Positive/Neutral/Negative
+            Feedback:
+            """
+        
+        # print(GPT_COMPARISION_PROMPT)
             
         response = self.openai_client.chat.completions.create(
             model= GPT_MODEL_NAME,  # or "gpt-4" if you have access
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": GPT_COMPARISION_PROMPT}
+                {"role": "user", "content": GPT_COMPARISION_PROMPT2}
             ],
             max_tokens=GPT_MAX_TOKENS,
             temperature=TEMPERATURE
         )
-        print(f"Raw response => {response}")
+        # print(f"Raw response => {response}")
         message_content = response.choices[0].message.content
         print(message_content)
         return message_content     
@@ -53,9 +70,9 @@ class gpt_model:
 if __name__ == "__main__":
     gpt_obj = gpt_model()
     
-    question = "What are some components or organelles present in the cytoplasm?"
-    llm_answer = "Some components or organelles present in the cytoplasm include the nucleus, mitochondria, endoplasmic reticulum, and ribosomes."
-    student_answer = "organelles present in the cytoplasm include the nucleus, mitochondria, endoplasmic reticulum."
+    question = "Why should harvested grains be kept safe from moisture, insects, rats, and microorganisms?"
+    llm_answer = "Harvested grains should be kept safe from moisture, insects, rats, and microorganisms to prevent spoilage or attacks by organisms that can make them unfit for use or germination. Proper drying of grains in the sun reduces moisture, preventing attacks by insect pests, bacteria, and fungi."
+    student_answer = "Drying grains adequately under sunlight is key to decreasing moisture content, which helps in warding off pests like insects, harmful bacteria, and fungi."
     
     chat_message = gpt_obj.compare_sentences(question, student_answer, llm_answer)
     answer, feedback = gpt_obj.extract_result(chat_message)

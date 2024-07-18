@@ -7,7 +7,7 @@ parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
 
-from typing import Any
+from typing import Any, List
 from fastapi import APIRouter
 
 import pandas as pd
@@ -66,6 +66,18 @@ def extract_result(message: str):
         return [s.split(":")[1].strip() if "Answer:" in s else s.strip() for s in message.split("\nFeedback:")]
     else:
         return message    
+
+@api_router.post("/generate_rag_answers", response_model=Any)
+async def generate_rag_answers(questions: List[str]):
+    rm = rag_model()
+    print(questions)
+    llm_answers, errors = rm.get_llm_answers(questions)
+    # print(llm_answers)
+    # for question, answer in llm_answers:
+    #     print(question, answer)
+    response =  [{"question": pair[0], "answer": pair[1]} for pair in llm_answers]
+    return response
+    
     
 @api_router.post("/validate_answers", response_model=schemas.PredictionResults)
 async def validate_answers(input_data: schemas.MultipleDataInputs):

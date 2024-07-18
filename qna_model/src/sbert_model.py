@@ -13,7 +13,7 @@ import csv
 from dotenv import load_dotenv
 
 import qna_model.src.preprocessor as pp
-from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH, HF_FINTUNE_MODEL_PATH
+from qna_model.config import sts_model_name, FINETUNE_MODEL_PATH, HF_FINTUNE_MODEL_PATH, EPOCHS, BATCH_SIZE,WARMUP_STEPS
 
 
 class SBERTModel:
@@ -62,12 +62,12 @@ class SBERTModel:
 
     def fine_tune(self, train_df: pd.DataFrame, epochs=1, batch_size=16):
         train_examples = self.df_to_input_examples(train_df)
-        train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=batch_size)
+        train_dataloader = DataLoader(train_examples, shuffle=True, batch_size=BATCH_SIZE)
         train_loss = losses.CosineSimilarityLoss(self.model)
         print("train started...")
         # self.upload_to_hub()
         self.model.fit(train_objectives=[(train_dataloader, train_loss)], 
-                       epochs=epochs, warmup_steps=100, show_progress_bar=True)        
+                       epochs=EPOCHS, warmup_steps=WARMUP_STEPS, show_progress_bar=True)        
         print("train ended")
         self.model.save(self.output_model_path)
         
