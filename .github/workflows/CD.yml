@@ -17,37 +17,36 @@ jobs:
     runs-on: self-hosted
 
     steps:        
-      - name: Delete Old Docker Container
+      - name: Delete Old Docker Container for QnA Model
         run: sudo docker rm -f qna-fastapi-container || true
         
-      - name: Delete Docker Image
+      - name: Delete Docker Image for QnA Model
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
         run: sudo docker rmi $DOCKER_USER/qna_api || true
     
-      - name: Pull Docker Image
+      - name: Pull Docker Image for QnA Model
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
         run: sudo docker pull $DOCKER_USER/qna_api:latest
     
-      - name: Run Docker Container
+      - name: Run Docker Container for QnA Model
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: sudo docker run -it -d -p 8001:8001 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --name=qna-fastapi-container $DOCKER_USER/qna_api:latest
 
-      - name: Delete Docker Image
-        env: 
-          DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker rmi $DOCKER_USER/angular-api || true  
+           
+      - name: Delete Old Angular Docker Container
+        run: sudo docker rm -f angular-api-container || true
  
      
-      - name: Pull Docker Image
+      - name: Pull Docker Image for Angular API
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
         run: sudo docker pull $DOCKER_USER/angular-api:latest
     
-      - name: Run Docker Container
+      - name: Run Docker Container for Angular API
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
         run: sudo docker run -it -d -p 4200:4200 --name=angular-api-container $DOCKER_USER/angular-api:latest
