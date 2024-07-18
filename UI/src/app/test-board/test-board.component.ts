@@ -22,6 +22,7 @@ export class TestBoardComponent {
   constructor(private router: Router, private route: ActivatedRoute, private csvApisService: CsvApisService, private backendApisService: BackendApisService, private loadingService: LoadingService) { }
   position: number = 0;
   QUESTIONS!: Question[];
+  isVisible: boolean = false;
   ngOnInit() {
     this.loadingService.show();
     this.route.paramMap.subscribe(params => {
@@ -43,11 +44,15 @@ export class TestBoardComponent {
             given_answer: '',
             result: Math.floor(Math.random() * 100).toString()
           });
-          this.loadingService.hide();
+          
           console.log(this.QUESTIONS[i].position);
         }
         console.log(this.QUESTIONS);
-       
+        this.loadingService.hide();
+        if(this.QUESTIONS.length > 0) {
+          this.isVisible = true;
+        }
+        
         // this.QUESTIONS = data.items
       },
       error => this.errorMessage = error

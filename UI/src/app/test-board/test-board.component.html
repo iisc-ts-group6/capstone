@@ -9,7 +9,7 @@
             </p>
         </div>
         <div style="display: flex; justify-content: center; height: 50%;">
-            <div style="width: 100%;display: flex; justify-content: center;">
+            <div *ngIf="isVisible" style="width: 100%;display: flex; justify-content: center;">
                 <div style="width: 100%;">
                     <div style="display: flex; width: 100%;">
                         <div style="width: 40%; padding: 10px;">
@@ -47,6 +47,7 @@
                     </div>
                 </div>
             </div>
+            <div *ngIf="!isVisible">No Records found!</div>
         </div>
     </div>
 </div>
