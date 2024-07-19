@@ -38,24 +38,5 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: sudo docker run -it -d -p 8001:8001 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --name=qna-fastapi-container $DOCKER_USER/qna_api:latest
 
-          
-      - name: Delete Old Angular Docker Container
-        run: |
-          sudo docker stop angular-api-container || true
-          sudo docker rm -f angular-api-container || true
-          sudo docker rmi -f $DOCKER_USER/angular-api:latest || true
- 
-     
-      - name: Pull Docker Image for Angular API
-        env: 
-          DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker pull $DOCKER_USER/angular-api:latest
-    
-      - name: Run Docker Container for Angular API
-        env: 
-          DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker run -it -d -p 4200:4200 --name=angular-api-container $DOCKER_USER/angular-api:latest
-
-
 
 
