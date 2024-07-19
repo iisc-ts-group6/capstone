@@ -1,4 +1,4 @@
-name: QnA CI
+name: UI_CI
 
 on:
  workflow_dispatch:
