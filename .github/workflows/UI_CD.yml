@@ -1,0 +1,36 @@
+name: UI CD Pipeline
+
+# Only trigger, when the build workflow succeeded i.e. CI Pipeline
+on:
+  workflow_dispatch: 
+    # push:
+    #   branches:
+    #     - main
+
+#  workflow_run:
+ #    workflows: ["QnA CI"]
+    # types:
+    #   - completed
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:        
+          
+      - name: Delete Old Angular Docker Container
+        run: |
+          sudo docker stop angular-api-container || true
+          sudo docker rm -f angular-api-container || true
+          sudo docker rmi -f $DOCKER_USER/angular-api:latest || true
+ 
+     
+      - name: Pull Docker Image for Angular API
+        env: 
+          DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
+        run: sudo docker pull $DOCKER_USER/angular-api:latest
+    
+      - name: Run Docker Container for Angular API
+        env: 
+          DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
+        run: sudo docker run -it -d -p 4200:4200 --name=angular-api-container $DOCKER_USER/angular-api:latest
