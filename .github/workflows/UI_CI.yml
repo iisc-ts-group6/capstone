@@ -1,0 +1,39 @@
+name: QnA CI
+
+on:
+ workflow_dispatch:
+ # push:
+ #      branches:
+ #        - main
+ #  # pull_request:
+ #  #   branches:
+ #  #     - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'
+
+      - name: Login to Docker hub
+        uses: docker/login-action@v3
+        with:
+            username: ${{ secrets.DOCKER_USER_NAME }}
+            password: ${{ secrets.DOCKER_TOKEN }}
+      
+           
+      - name: Build and Push Docker image for Angular app
+        run: |
+          cd UI
+          docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/angular-api:latest 
+          docker push ${{ secrets.DOCKER_USER_NAME }}/angular-api
+
+      - name: Logout to Docker hub
+        run: docker logout
