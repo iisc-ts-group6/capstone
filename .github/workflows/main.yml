@@ -50,11 +50,5 @@ jobs:
       - name: Push the Docker Image
         run: docker push ${{ secrets.DOCKER_USER_NAME }}/qna_api
 
-      - name: Build and Push Docker image for Angular app
-        run: |
-          cd UI
-          docker build . -f Dockerfile -t ${{ secrets.DOCKER_USER_NAME }}/angular-api:latest 
-          docker push ${{ secrets.DOCKER_USER_NAME }}/angular-api
-
       - name: Logout to Docker hub
         run: docker logout
