@@ -8,4 +8,4 @@ RUN npm install --foreground-scripts
 
 RUN npm install -g @angular/cli
 
-CMD ["ng", "serve"]
+CMD ["ng", "serve","--host","0.0.0.0"]
