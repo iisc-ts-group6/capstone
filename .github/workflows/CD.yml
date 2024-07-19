@@ -25,7 +25,7 @@ jobs:
       - name: Delete Docker Image for QnA Model
         env: 
           DOCKER_USER: ${{ secrets.DOCKER_USER_NAME }}
-        run: sudo docker rmi $DOCKER_USER/qna_api || true
+        run: sudo docker rmi -f $DOCKER_USER/qna_api:latest || true
     
       - name: Pull Docker Image for QnA Model
         env: 
@@ -38,11 +38,12 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: sudo docker run -it -d -p 8001:8001 -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} --name=qna-fastapi-container $DOCKER_USER/qna_api:latest
 
-           
+          
       - name: Delete Old Angular Docker Container
         run: |
           sudo docker stop angular-api-container || true
           sudo docker rm -f angular-api-container || true
+          sudo docker rmi -f $DOCKER_USER/angular-api:latest || true
  
      
       - name: Pull Docker Image for Angular API
