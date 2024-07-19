@@ -7,10 +7,10 @@ on:
     #   branches:
     #     - main
 
-  workflow_run:
-     workflows: ["QnA CI"]
-     types:
-       - completed
+#  workflow_run:
+ #    workflows: ["QnA CI"]
+    # types:
+    #   - completed
 
 jobs:
   deploy:
