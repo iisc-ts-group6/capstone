@@ -19,7 +19,7 @@ jobs:
     steps:        
       - name: Stop and Delete Old Docker Container for QnA Model
         run: |
-         sudo docker stop qna-fastapi-container
+         sudo docker stop qna-fastapi-container || true
          sudo docker rm -f qna-fastapi-container || true
         
       - name: Delete Docker Image for QnA Model
