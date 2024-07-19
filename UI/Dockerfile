@@ -6,7 +6,9 @@ COPY . /src/app
 
 RUN npm cache clean --force
 
-RUN npm install -g npm@latest
+RUN npm install --no-package-lock
+
+#RUN npm install -g npm@latest
 
 RUN npm install -g @angular/cli
 
