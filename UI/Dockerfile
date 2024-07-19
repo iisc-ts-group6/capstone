@@ -4,7 +4,7 @@ WORKDIR /src/app
 
 COPY . /src/app
 
-RUN npm install npm@latest
+RUN npm install --foreground-scripts
 
 RUN npm install -g @angular/cli
 
